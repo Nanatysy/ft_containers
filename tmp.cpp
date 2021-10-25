@@ -22,8 +22,21 @@ int main(void)
 //		std::cout << "false" << std::endl;
 //	return (0);
 
+	std::vector<int> ref(4, 6);
+
 	ft::vector<int> v_i;
-	ft::vector<int> v_i_2(4, 6);
+	ft::vector<int> v_i_2(ref.begin(), ref.end());
+
+	v_i_2.reserve(20);
+	try {
+		std::cout << "Size: " << v_i_2.size() << ", Capacity: " << v_i_2.capacity() << std::endl;
+		for (int i = 0; i < 15; i++)
+			std::cout << v_i_2.at(i) << " ";
+		std::cout << std::endl;
+	}
+	catch (std::exception & e) {
+		std::cout << e.what();
+	}
 //	ft::vector<int>::iterator it;
 
 
