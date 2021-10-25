@@ -26,6 +26,8 @@ int main(void)
 
 	ft::vector<int> v_i;
 	ft::vector<int> v_i_2(ref.begin(), ref.end());
+	const ft::vector<int> v_i_3(ref.begin(), ref.end());
+
 
 	v_i_2.reserve(20);
 	try {
@@ -35,9 +37,40 @@ int main(void)
 		std::cout << std::endl;
 	}
 	catch (std::exception & e) {
-		std::cout << e.what();
+		std::cout << e.what() << std::endl;
 	}
-//	ft::vector<int>::iterator it;
+	std::cout << v_i_2[2]++ << std::endl;
 
+	for (int i = 0; i < v_i_2.size(); i++)
+		std::cout << v_i_2[i] << " ";
+
+	std::cout << std::endl;
+	std::cout << "Front: " << v_i_2.front() << std::endl;
+	std::cout << "Back: " << v_i_2.back() << std::endl;
+	v_i_2.empty() ? std::cout << "Vector is empty" : std::cout << "Vector is not empty";
+	std::cout << std::endl;
+	v_i.empty() ? std::cout << "Vector1 is empty" : std::cout << "Vector1 is not empty";
+	std::cout << std::endl;
+
+	std::cout << std::endl << "----------->  Const test  <-------------" << std::endl << std::endl;
+
+	try {
+		std::cout << "Size: " << v_i_3.size() << ", Capacity: " << v_i_3.capacity() << std::endl;
+		for (int i = 0; i < 15; i++)
+			std::cout << v_i_3.at(i) << " ";
+		std::cout << std::endl;
+	}
+	catch (std::exception & e) {
+		std::cout << e.what() << std::endl;
+	}
+
+	for (int i = 0; i < v_i_3.size(); i++)
+		std::cout << v_i_3[i] << " ";
+
+	std::cout << std::endl;
+	std::cout << "Front: " << v_i_3.front() << std::endl;
+	std::cout << "Back: " << v_i_3.back() << std::endl;
+	v_i_3.empty() ? std::cout << "Vector is empty" : std::cout << "Vector is not empty";
+	std::cout << std::endl;
 
 }
