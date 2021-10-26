@@ -10,4 +10,5 @@ include_directories(.)
 add_executable(ft_containers
         tmp.cpp
         vector.hpp
+        stack.hpp
         my_print.hpp)
