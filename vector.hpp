@@ -243,6 +243,7 @@ namespace ft {
 			_array = _alloc.allocate(_mem_size);
 			for (size_t i = 0; i < _size; i++)
 				_alloc.construct(&_array[i], src._array[i]);
+			return (*this);
 		}
 
 		// iterators
@@ -260,8 +261,43 @@ namespace ft {
 		{
 			return (_size);
 		}
-		size_type max_size() const; // TODO: find max allocatable size
-		void resize (size_type n, value_type val = value_type());
+		size_type max_size() const
+		{
+			return (_alloc.max_size());
+		}
+		void resize (size_type n, value_type val = value_type())
+		{
+			if (n < _size)
+			{
+				for (size_type i = n; i < _size; i++)
+					_alloc.destroy(&_array[i]);
+			}
+			else if (n < _mem_size)
+			{
+				for (size_type i = _size; i < n; i++)
+					_alloc.construct(&_array[i], val);
+			}
+			else
+			{
+				value_type *tmp;
+
+				tmp = _array;
+				_array = _alloc.allocate(n * 2);
+				for (size_type i = 0; i < n; i++)
+				{
+					if (i < _size)
+						_alloc.construct(&_array[i], tmp[i]);
+					else
+						_alloc.construct(&_array[i], val);
+				}
+
+				for (size_type i = 0; i < _size; i++)
+					_alloc.destroy(&tmp[i]);
+				_alloc.deallocate(tmp, _mem_size);
+				_mem_size = n * 2;
+			}
+			_size = n;
+		}
 		size_type capacity() const
 		{
 			return (_mem_size);
@@ -291,23 +327,22 @@ namespace ft {
 		// element access
 		reference operator[] (size_type n)
 		{
-//			if (n < _size)
 				return (_array[n]);
 		}
 		const_reference operator[] (size_type n) const
 		{
 			return (_array[n]);
 		}
-		reference at (size_type n) // TODO: out of range exception instead of std exc
+		reference at (size_type n)
 		{
 			if (n >= _size)
-				throw std::exception();
+				throw std::out_of_range("out_of_range");
 			return (_array[n]);
 		}
 		const_reference at (size_type n) const
 		{
 			if (n >= _size)
-				throw std::exception();
+				throw std::out_of_range("out_of_range");
 			return (_array[n]);
 		}
 		reference front()
@@ -329,8 +364,93 @@ namespace ft {
 
 		// modifiers
 		template <class InputIterator>
-		void assign (InputIterator first, InputIterator last);
-		void assign (size_type n, const value_type& val);
+		void assign (InputIterator first, InputIterator last) // TODO: check
+		// if  first is in cur vector
+		{
+//			size_type	i;
+//			InputIterator	it_tmp;
+//
+//			i = 0;
+//			it_tmp = first;
+//			while (it_tmp++ != last)
+//				i++;
+//			if (i < _mem_size)
+		}
+		void assign (size_type n, const value_type& val)
+		{
+			if (n < _mem_size)
+			{
+				for (size_type i = 0; i < _size; i++)
+					_alloc.destroy(&_array[i]);
+				for (size_type i = 0; i < n; i++)
+				{
+					_alloc.construct(&_array[i], val);
+				}
+				_size = n;
+			}
+			else
+			{
+				value_type *tmp;
+
+				tmp = _array;
+				_array = _alloc.allocate(n * 2);
+				for (size_type i = 0; i < n; i++)
+				{
+					_alloc.construct(&_array[i], val);
+				}
+
+				for (size_type i = 0; i < _size; i++)
+					_alloc.destroy(&tmp[i]);
+				_alloc.deallocate(tmp, _mem_size);
+				_mem_size = n * 2;
+				_size = n;
+			}
+		}
+		void push_back (const value_type& val)
+		{
+			if (_size >= _mem_size)
+			{
+				value_type *tmp;
+
+				tmp = _array;
+				_array = _alloc.allocate(_size * 2);
+				for (size_type i = 0; i < _size; i++)
+				{
+					_alloc.construct(&_array[i], tmp[i]);
+				}
+
+				for (size_type i = 0; i < _size; i++)
+					_alloc.destroy(&tmp[i]);
+				_alloc.deallocate(tmp, _mem_size);
+				_mem_size = _size * 2;
+			}
+			_alloc.construct(&_array[_size++], val);
+		}
+		void pop_back()
+		{
+			if (!this->empty())
+				_alloc.destroy(&_array[--_size]);
+		}
+//		iterator insert (iterator position, const value_type& val);
+//		void insert (iterator position, size_type n, const value_type& val);
+//		template <class InputIterator>
+//		void insert (iterator position, InputIterator first, InputIterator last);
+//		iterator erase (iterator position);
+//		iterator erase (iterator first, iterator last);
+		void swap (vector& x);
+		void clear()
+		{
+			for (size_type i = 0; i < _size; i++)
+			{
+				_alloc.destroy(&_array[i]);
+			}
+		}
+
+		// allocator
+		allocator_type get_allocator() const
+		{
+			return (_alloc);
+		}
 
 
 	private:
@@ -340,6 +460,62 @@ namespace ft {
 		allocator_type	_alloc;
 
 	};
+
+	// non-member functions overloads
+	template <class T, class Alloc>
+	bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		if (lhs.size() == rhs.size())
+		{
+			for (size_t i = 0; i < lhs.size(); i++)
+			{
+				if (lhs[i] != rhs[i])
+					return (false);
+			}
+			return (true);
+		}
+		return (false);
+	}
+	template <class T, class Alloc>
+	bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (!(lhs==rhs));
+	}
+	template <class T, class Alloc>
+	bool operator< (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		size_t	i;
+
+		i = 0;
+		while (i < lhs.size() && i < rhs.size())
+		{
+			if (lhs[i] > rhs[i])
+				return (false);
+			i++;
+		}
+		return (true);
+	}
+	template <class T, class Alloc>
+	bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (lhs < rhs || lhs == rhs);
+	}
+	template <class T, class Alloc>
+	bool operator> (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (rhs < lhs);
+	}
+	template <class T, class Alloc>
+	bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (lhs > rhs || lhs == rhs);
+	}
+
+//	template <class T, class Alloc>
+//	void swap (vector<T,Alloc>& x, vector<T,Alloc>& y)
+//	{
+//
+//	}
 
 }
 
