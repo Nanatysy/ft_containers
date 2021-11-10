@@ -13,6 +13,151 @@ namespace ft {
 	class vector
 	{
 
+
+	private:
+		template<class Distance = ptrdiff_t,
+				class Pointer = T*, class Reference = T&>
+		class iterator // TODO: random access iterator
+		{
+		public:
+
+			typedef T value_type;
+			typedef Distance difference_type;
+			typedef Pointer pointer;
+			typedef Reference reference;
+
+//			typedef T value_type;
+//			typedef ptrdiff_t difference_type;
+//			typedef T* pointer;
+//			typedef T& reference;
+
+			iterator() : _ptr(nullptr) {}
+//			iterator(T *data) : _ptr(data) {}
+			iterator(const iterator & src)
+			{
+				*this = src;
+			}
+			virtual ~iterator() {}
+
+			iterator &operator=(const iterator<T> & src)
+			{
+				if (this == &src)
+					return (*this);
+
+				_ptr = src->_ptr;
+				return (*this);
+			}
+
+			bool operator==(const iterator<T> & src) const
+			{
+				return (this->_ptr == src->_ptr);
+			}
+			bool operator!=(const iterator<T> & src) const
+			{
+				return (this->_ptr != src->_ptr);
+			}
+			const T &operator*()
+			{
+				return (*_ptr);
+			}
+			const T &operator*() const
+			{
+				return (*_ptr);
+			}
+			T *operator->()
+			{
+				return (_ptr);
+			}
+			T *operator->() const
+			{
+				return (_ptr);
+			}
+			iterator<T> &operator++()
+			{
+				_ptr++;
+				return (*this);
+			}
+			iterator<T> &operator++(int)
+			{
+				iterator<T> tmp(*this);
+
+				++(*this);
+				return (tmp);
+			}
+//			const T & operator*++(int)
+//			{
+//				T tmp = *_ptr;
+//
+//				*_ptr++;
+//				return (tmp);
+//			} //?
+			iterator<T> &operator--()
+			{
+				_ptr--;
+				return (*this);
+			}
+			iterator<T> &operator--(int)
+			{
+				iterator<T> tmp(*this);
+
+				--(*this);
+				return (tmp);
+			}
+//			const T &operator*--(int)
+//			{
+//				T tmp = *_ptr;
+//
+//				*_ptr--;
+//				return (tmp);
+//			} //?
+			iterator<T> &operator+(int n) const
+			{
+				return (_ptr + n);
+			}
+			iterator<T> &operator-(int n) const
+			{
+				return (_ptr - n);
+			}
+			bool operator<(const iterator<T> & src) const
+			{
+				return (this->_ptr < src->_ptr);
+			}
+			bool operator>(const iterator<T> & src) const
+			{
+				return (this->_ptr > src->_ptr);
+			}
+			bool operator<=(const iterator<T> & src) const
+			{
+				return (*this < src || *this == src);
+			}
+			bool operator>=(const iterator<T> & src) const
+			{
+				return (*this > src || *this == src);
+			}
+			iterator<T> &operator+=(int n)
+			{
+				_ptr += n;
+				return (_ptr);
+			}
+			iterator<T> &operator-=(int n)
+			{
+				_ptr -= n;
+				return (_ptr);
+			}
+			const T &operator[](size_t n)
+			{
+				return (*(_ptr + n));
+			}
+			const T &operator[](size_t n) const
+			{
+				return (*(_ptr + n));
+			}
+
+		private:
+			value_type * _ptr;
+		};
+
+
 	public:
 		typedef T value_type;
 		typedef Alloc allocator_type;
@@ -27,149 +172,9 @@ namespace ft {
 		typedef size_t size_type; // ?
 
 
-//		template<class Distance = ptrdiff_t,
-//				class Pointer = T*, class Reference = T&>
-//		class iterator // TODO: random access iterator
-//		{
-//		public:
-//
-////			typedef T value_type;
-////			typedef Distance difference_type;
-////			typedef Pointer pointer;
-////			typedef Reference reference;
-//
-//			typedef T value_type;
-//			typedef ptrdiff_t difference_type;
-//			typedef T* pointer;
-//			typedef T& reference;
-//
-//			iterator() : _ptr(nullptr) {}
-////			iterator(T *data) : _ptr(data) {}
-//			iterator(const iterator & src)
-//			{
-//				*this = src;
-//			}
-//			virtual ~iterator() {}
-//
-//			iterator &operator=(const iterator<T> & src)
-//			{
-//				if (this == &src)
-//					return (*this);
-//
-//				_ptr = src->_ptr;
-//				return (*this);
-//			}
-//
-//			bool operator==(const iterator<T> & src) const
-//			{
-//				return (this->_ptr == src->_ptr);
-//			}
-//			bool operator!=(const iterator<T> & src) const
-//			{
-//				return (this->_ptr != src->_ptr);
-//			}
-//			const T &operator*()
-//			{
-//				return (*_ptr);
-//			}
-//			const T &operator*() const
-//			{
-//				return (*_ptr);
-//			}
-//			T *operator->()
-//			{
-//				return (_ptr);
-//			}
-//			T *operator->() const
-//			{
-//				return (_ptr);
-//			}
-//			iterator<T> &operator++()
-//			{
-//				_ptr++;
-//				return (*this);
-//			}
-//			iterator<T> &operator++(int)
-//			{
-//				iterator<T> tmp(*this);
-//
-//				++(*this);
-//				return (tmp);
-//			}
-////			const T & operator*++(int)
-////			{
-////				T tmp = *_ptr;
-////
-////				*_ptr++;
-////				return (tmp);
-////			} //?
-//			iterator<T> &operator--()
-//			{
-//				_ptr--;
-//				return (*this);
-//			}
-//			iterator<T> &operator--(int)
-//			{
-//				iterator<T> tmp(*this);
-//
-//				--(*this);
-//				return (tmp);
-//			}
-////			const T &operator*--(int)
-////			{
-////				T tmp = *_ptr;
-////
-////				*_ptr--;
-////				return (tmp);
-////			} //?
-//			iterator<T> &operator+(int n) const
-//			{
-//				return (_ptr + n * difference_type);
-//			}
-//			iterator<T> &operator-(int n) const
-//			{
-//				return (_ptr - n * difference_type);
-//			}
-//			bool operator<(const iterator<T> & src) const
-//			{
-//				return (this->_ptr < src->_ptr);
-//			}
-//			bool operator>(const iterator<T> & src) const
-//			{
-//				return (this->_ptr > src->_ptr);
-//			}
-//			bool operator<=(const iterator<T> & src) const
-//			{
-//				return (*this < src || *this == src);
-//			}
-//			bool operator>=(const iterator<T> & src) const
-//			{
-//				return (*this > src || *this == src);
-//			}
-//			iterator<T> &operator+=(int n)
-//			{
-//				_ptr += n * difference_type ;
-//				return (_ptr);
-//			}
-//			iterator<T> &operator-=(int n)
-//			{
-//				_ptr -= n * difference_type;
-//				return (_ptr);
-//			}
-//			const T &operator[](size_t n)
-//			{
-//				return (*(_ptr + n * difference_type));
-//			}
-//			const T &operator[](size_t n) const
-//			{
-//				return (*(_ptr + n * difference_type));
-//			}
-//
-//		private:
-//			T* _ptr;
-//		};
 
-//		typedef typename vector<T, Alloc>::iterator iterator;
+
+//		typedef typename vector<T>::iterator iterator;
 //		typedef typename vector<const T, Alloc>::iterator const_iterator;
 
 

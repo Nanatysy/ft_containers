@@ -12,6 +12,13 @@ namespace ft
 			allocator<pair<const Key,T> > >
 	class map
 	{
+
+
+	private:
+
+
+
+
 	public:
 		typedef Key key_type;
 		typedef T mapped_type;

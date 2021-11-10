@@ -11,4 +11,10 @@ add_executable(ft_containers
         tmp.cpp
         vector.hpp
         stack.hpp
+        map.hpp
+        pair.hpp
         my_print.hpp)
+
+add_executable(ft_pair
+        pair_tmp.cpp
+        pair.hpp)
