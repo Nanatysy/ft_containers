@@ -3,8 +3,6 @@
 //
 
 #include <iostream>
-#include <iomanip>
-#include <utility>
 #include <vector>
 #include <algorithm>
 #include <string>
@@ -13,15 +11,49 @@
 
 int main()
 {
-	std::vector<ft::pair<int, std::string> > v;
+	{
+		std::vector<ft::pair<int, std::string> > v;
 
-	v.push_back(ft::make_pair(2, "baz"));
-	v.push_back(ft::make_pair(2, "bar"));
-	v.push_back(ft::make_pair(1, "foo"));
+		v.push_back(ft::make_pair(2, "baz"));
+		v.push_back(ft::make_pair(2, "bar"));
+		v.push_back(ft::make_pair(1, "foo"));
 
-	std::sort(v.begin(), v.end());
+		std::sort(v.begin(), v.end());
 
-	for(auto p: v) {
-		std::cout << "{" << p.first << ", " << p.second << "}\n";
+		std::vector<ft::pair<int, std::string> >::iterator it = v.begin();
+
+		for ( ; it != v.end(); it++)
+		{
+			std::cout << "{" << it->first << ", " << it->second << "}\n";
+		}
+	}
+
+	{
+		ft::pair<std::string, int> str_int("first", 1);
+		ft::pair<int, float> int_float(35, 34.5);
+		ft::pair<char, int> ch_int(int_float);
+		ft::pair<int, float> int_float_2(int_float);
+
+		std::cout << "{" << str_int.first << ", " << str_int.second << "}\n";
+		std::cout << "{" << int_float.first << ", " << int_float.second << "}\n";
+		std::cout << "{" << ch_int.first << ", " << ch_int.second << "}\n";
+		std::cout << "{" << int_float_2.first << ", " << int_float_2.second << "}\n";
+
+
+		int_float >= int_float_2 ? std::cout << "bigger or equal" : std::cout
+		<< "less";
+		std::cout << std::endl;
+
+		int_float > int_float_2 ? std::cout << "bigger" : std::cout << "less";
+		std::cout << std::endl;
+
+		int_float < int_float_2 ? std::cout << "less" : std::cout << "bigger";
+		std::cout << std::endl;
+
+		int_float <= int_float_2 ? std::cout << "less or equal" : std::cout <<
+		"bigger";
+		std::cout << std::endl;
+
+
 	}
 }

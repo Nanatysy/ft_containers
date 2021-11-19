@@ -31,6 +31,7 @@ int main(void)
 	std::cout << BlANK << std::endl;
 
 	ft::vector<int> v_i;
+//	ft::vector<int> v_i_5(4, 7);
 	ft::vector<int> v_i_2(ref.begin(), ref.end());
 	const ft::vector<int> v_i_3(ref.begin(), ref.end());
 
@@ -129,6 +130,48 @@ int main(void)
 		if (foo>=bar) std::cout << "foo is greater than or equal to bar - ";
 		if (fo>=ba) std::cout << "fo is greater than or equal to ba" << std::endl;
 	}
+
+	{
+		std::vector<int> fo(4,100);
+
+		ft::vector<int> foo(fo.begin(), fo.end());
+		ft::vector<int>::iterator it = foo.begin();
+//		ft::vector<int>::iterator ite = foo.end();
+
+		foo.insert(it, 5, 5);
+//		it = foo.insert(it, 6);
+//		it = foo.insert(it, 7);
+		ft::vector<int>::iterator ite = foo.begin();
+		for ( ; ite != foo.end(); ++ite)
+			std::cout << *ite << std::endl;
+
+	}
+
+	{
+
+		std::cout << "-------------" << std::endl;
+		std::vector<int> foo(4, 100);
+		std::vector<int>::iterator it = foo.begin();
+		++it;
+		*it = 5;
+
+		ft::vector<int> fo(foo.begin(), foo.end());
+		ft::vector<int>::iterator fit = fo.begin();
+		for ( ; fit != fo.end(); ++fit)
+			std::cout << *fit << " ";
+		std::cout << std::endl;
+
+		ft::vector<int>::iterator fff = fo.begin();
+		++fff;
+		ft::vector<int>::iterator ff2 = fff;
+		++ff2;
+		fo.erase(fff, ff2);
+		fit = fo.begin();
+		for ( ; fit != fo.end(); ++fit)
+			std::cout << *fit << " ";
+		std::cout << std::endl;
+	}
+
 
 	return (0);
 }
