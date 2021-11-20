@@ -132,19 +132,47 @@ int main(void)
 	}
 
 	{
-		std::vector<int> fo(4,100);
+		std::vector<int> fo(0);
+		for (int i = 0; i < 10; i++)
+			fo.push_back(i);
 
 		ft::vector<int> foo(fo.begin(), fo.end());
 		ft::vector<int>::iterator it = foo.begin();
 //		ft::vector<int>::iterator ite = foo.end();
 
-		foo.insert(it, 5, 5);
-//		it = foo.insert(it, 6);
-//		it = foo.insert(it, 7);
-		ft::vector<int>::iterator ite = foo.begin();
-		for ( ; ite != foo.end(); ++ite)
-			std::cout << *ite << std::endl;
+//		foo.insert(it, 5, 5);
+////		it = foo.insert(it, 6);
+////		it = foo.insert(it, 7);
+//		ft::vector<int>::iterator ite = foo.begin();
+		std::for_each(it, foo.end(), my_print<int>);
+		std::cout << std::endl;
+		std::cout << YELLOW;
+		std::for_each(fo.begin(), fo.end(), my_print<int>);
+		std::cout << BlANK << std::endl;
 
+		ft::vector<int>::iterator middle = std::find(foo.begin(), foo.end(),
+													  0);
+		ft::vector<int>::iterator first = std::find(foo.begin(), foo.end(), 5);
+		ft::vector<int>::iterator last = std::find(foo.begin(), foo.end(), 9);
+
+//		foo.insert(middle, first, last);
+//		std::for_each(foo.begin(), foo.end(), my_print<int>);
+//		std::cout << std::endl;
+
+		std::vector<int>::iterator middle2 = std::find(fo.begin(), fo.end(),
+													 0);
+		std::vector<int>::iterator first2 = std::find(fo.begin(), fo.end(),
+													  5);
+		std::vector<int>::iterator last2 = std::find(fo.begin(), fo.end(), 9);
+
+		fo.insert(middle2, first2, last2);
+		std::cout << YELLOW;
+		std::for_each(fo.begin(), fo.end(), my_print<int>);
+		std::cout << BlANK << std::endl;
+
+//		for ( ; it != foo.end(); ++it)
+//			std::cout << *it << " ";
+		std::cout << std::endl;
 	}
 
 	{

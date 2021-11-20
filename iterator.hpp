@@ -55,6 +55,254 @@ namespace ft {
 //		typedef Reference reference;
 //	};
 
+	template<class Iter>
+	class _iterator
+	{
+	public:
+
+		typedef Iter iterator_type;
+		typedef typename ft::iterator_traits<Iter>::iterator_category iterator_category;
+		typedef typename ft::iterator_traits<Iter>::value_type value_type;
+		typedef typename ft::iterator_traits<Iter>::difference_type difference_type;
+		typedef typename ft::iterator_traits<Iter>::pointer pointer;
+		typedef typename ft::iterator_traits<Iter>::reference reference;
+
+		_iterator() : _ptr(nullptr) {}
+		_iterator(Iter data) : _ptr(data) {}
+		_iterator(const _iterator & src)
+		{
+			*this = src;
+		}
+		virtual ~_iterator() {}
+
+		_iterator &operator=(const _iterator<Iter> & src)
+		{
+			if (this == &src)
+				return (*this);
+
+			_ptr = src._ptr;
+			return (*this);
+		}
+
+		bool operator==(const _iterator<Iter> & src) const
+		{
+			return (this->_ptr == src._ptr);
+		}
+		bool operator!=(const _iterator<Iter> & src) const
+		{
+			return (this->_ptr != src._ptr);
+		}
+		const reference operator*()
+		{
+			return (*_ptr);
+		}
+		const reference operator*() const
+		{
+			return (*_ptr);
+		}
+		pointer operator->()
+		{
+			return (_ptr);
+		}
+		pointer operator->() const
+		{
+			return (_ptr);
+		}
+		_iterator<Iter> &operator++()
+		{
+			_ptr++;
+			return (*this);
+		}
+		_iterator<Iter> &operator++(int)
+		{
+			_iterator<Iter> tmp(*this);
+
+			++(*this);
+			return (tmp);
+		}
+		_iterator<Iter> &operator--()
+		{
+			_ptr--;
+			return (*this);
+		}
+		_iterator<Iter> &operator--(int)
+		{
+			_iterator<Iter> tmp(*this);
+
+			--(*this);
+			return (tmp);
+		}
+		_iterator<Iter> &operator+(difference_type n) const
+		{
+			return (_ptr + n);
+		}
+		_iterator<Iter> &operator-(difference_type n) const
+		{
+			return (_ptr - n);
+		}
+		bool operator<(const _iterator<Iter> & src) const
+		{
+			return (this->_ptr < src._ptr);
+		}
+		bool operator>(const _iterator<Iter> & src) const
+		{
+			return (this->_ptr > src._ptr);
+		}
+		bool operator<=(const _iterator<Iter> & src) const
+		{
+			return (*this < src || *this == src);
+		}
+		bool operator>=(const _iterator<Iter> & src) const
+		{
+			return (*this > src || *this == src);
+		}
+		_iterator<Iter> &operator+=(difference_type n)
+		{
+			_ptr += n;
+			return (_ptr);
+		}
+		_iterator<Iter> &operator-=(difference_type n)
+		{
+			_ptr -= n;
+			return (_ptr);
+		}
+		const reference operator[](difference_type n)
+		{
+			return (*(_ptr + n));
+		}
+		const reference operator[](difference_type n) const
+		{
+			return (*(_ptr + n));
+		}
+
+	private:
+		iterator_type _ptr;
+	};
+
+	template<class Iter>
+	class _reverse_iterator
+	{
+	public:
+		typedef Iter iterator_type;
+		typedef typename iterator_traits<Iter>::iterator_category
+				iterator_category;
+		typedef typename iterator_traits<Iter>::difference_type
+				difference_type;
+		typedef typename iterator_traits<Iter>::value_type value_type;
+		typedef typename iterator_traits<Iter>::pointer pointer;
+		typedef typename iterator_traits<Iter>::reference reference;
+
+		_reverse_iterator() : _ptr() {}
+		explicit _reverse_iterator(Iter position) : _ptr(position) {}
+		_reverse_iterator(const _reverse_iterator & src)
+		{
+			*this = src;
+		}
+		virtual ~_reverse_iterator() {}
+
+		_reverse_iterator & operator=(const _reverse_iterator & src)
+		{
+			if (this == &src)
+				return (*this);
+
+			_ptr = src._ptr;
+			return (*this);
+		}
+
+		bool operator==(const _reverse_iterator<Iter> & src) const
+		{
+			return (this->_ptr == src._ptr);
+		}
+		bool operator!=(const _reverse_iterator<Iter> & src) const
+		{
+			return (this->_ptr != src._ptr);
+		}
+		const reference operator*()
+		{
+			return (*_ptr);
+		}
+		const reference operator*() const
+		{
+			return (*_ptr);
+		}
+		pointer operator->()
+		{
+			return (_ptr);
+		}
+		pointer operator->() const
+		{
+			return (_ptr);
+		}
+		_reverse_iterator<Iter> &operator++()
+		{
+			_ptr--;
+			return (*this);
+		}
+		_reverse_iterator<Iter> &operator++(int)
+		{
+			_iterator<Iter> tmp(*this);
+
+			--(*this);
+			return (tmp);
+		}
+		_reverse_iterator<Iter> &operator--()
+		{
+			_ptr++;
+			return (*this);
+		}
+		_reverse_iterator<Iter> &operator--(int)
+		{
+			_iterator<Iter> tmp(*this);
+
+			++(*this);
+			return (tmp);
+		}
+		_reverse_iterator<Iter> &operator+(difference_type n) const
+		{
+			return (_ptr - n);
+		}
+		_reverse_iterator<Iter> &operator-(difference_type n) const
+		{
+			return (_ptr + n);
+		}
+		bool operator<(const _reverse_iterator<Iter> & src) const
+		{
+			return (this->_ptr > src._ptr);
+		}
+		bool operator>(const _reverse_iterator<Iter> & src) const
+		{
+			return (this->_ptr < src._ptr);
+		}
+		bool operator<=(const _reverse_iterator<Iter> & src) const
+		{
+			return (!(*this > src));
+		}
+		bool operator>=(const _reverse_iterator<Iter> & src) const
+		{
+			return (!(*this < src));
+		}
+		_reverse_iterator<Iter> &operator+=(difference_type n)
+		{
+			_ptr -= n;
+			return (_ptr);
+		}
+		_reverse_iterator<Iter> &operator-=(difference_type n)
+		{
+			_ptr += n;
+			return (_ptr);
+		}
+		const reference operator[](difference_type n)
+		{
+			return (*(_ptr + n));
+		}
+		const reference operator[](difference_type n) const
+		{
+			return (*(_ptr + n));
+		}
+
+	private:
+		iterator_type _ptr;
+	};
 
 }
 
