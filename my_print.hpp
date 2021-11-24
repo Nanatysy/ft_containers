@@ -24,4 +24,15 @@ void	print_info(const ft::vector<T> & src)
 	std::cout << std::endl;
 }
 
+template <typename T>
+void	print_info(const std::vector<T> & src)
+{
+	if (src.empty())
+		std::cout << "Vector is empty";
+	else
+		std::cout << "Vector isn't empty. Size: " << src.size() << ", Capacity: "
+				  << src.capacity();
+	std::cout << std::endl;
+}
+
 #endif //FT_CONTAINERS_MY_PRINT_HPP
