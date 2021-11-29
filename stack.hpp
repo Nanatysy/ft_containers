@@ -5,16 +5,18 @@
 #ifndef FT_CONTAINERS_STACK_HPP
 #define FT_CONTAINERS_STACK_HPP
 
-namespase ft
-{
+#include <iostream>
+#include "vector.hpp"
+
+namespace ft {
 
 	template <typename T, typename Container = ft::vector<T> >
 	class stack
 	{
 	public:
-		typedef value_type T;
-		typedef container_type Container;
-		typedef size_type size_t;
+		typedef T value_type;
+		typedef Container container_type;
+		typedef size_t size_type;
 
 		explicit stack (const container_type& ctnr = container_type()) : c(ctnr)
 		{}
@@ -46,6 +48,24 @@ namespase ft
 			c.pop_back();
 		}
 
+		template <class T1, class C1>
+		friend bool operator== (const stack<T1,C1>& lhs, const stack<T1,C1>& rhs);
+		template <class T1, class C1>
+		friend bool operator!= (const stack<T1,C1>& lhs, const stack<T1,C1>&
+		        rhs);
+		template <class T1, class C1>
+		friend bool operator<  (const stack<T1,C1>& lhs, const stack<T1,C1>&
+		        rhs);
+		template <class T1, class C1>
+		friend bool operator<= (const stack<T1,C1>& lhs, const stack<T1,C1>&
+		        rhs);
+		template <class T1, class C1>
+		friend bool operator>  (const stack<T1,C1>& lhs, const stack<T1,C1>&
+		        rhs);
+		template <class T1, class C1>
+		friend bool operator>= (const stack<T1,C1>& lhs, const stack<T1,C1>&
+		        rhs);
+
 	protected:
 		container_type	c;
 
@@ -64,22 +84,22 @@ namespase ft
 	template <class T, class Container>
 	bool operator<  (const stack<T,Container>& lhs, const stack<T,Container>& rhs)
 	{
-		return (lhs.c< rhs.c)
+		return (lhs.c< rhs.c);
 	}
 	template <class T, class Container>
 	bool operator<= (const stack<T,Container>& lhs, const stack<T,Container>& rhs)
 	{
-		return (lhs.c<= rhs.c)
+		return (lhs.c<= rhs.c);
 	}
 	template <class T, class Container>
 	bool operator>  (const stack<T,Container>& lhs, const stack<T,Container>& rhs)
 	{
-		return (lhs.c> rhs.c)
+		return (lhs.c> rhs.c);
 	}
 	template <class T, class Container>
 	bool operator>= (const stack<T,Container>& lhs, const stack<T,Container>& rhs)
 	{
-		return (lhs.c>= rhs.c)
+		return (lhs.c>= rhs.c);
 	}
 
 };
