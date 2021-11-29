@@ -10,7 +10,7 @@
 # include "enable_if.hpp"
 
 // TODO: enable_if ддя методов с итереторами (assign, insert, constructor),
-//  swap, reverse iterator(test)
+//  swap, reverse iterator(test), last - first(doesn't work)
 
 namespace ft {
 
@@ -36,8 +36,8 @@ namespace ft {
 
 
 		// constructor
-		explicit vector(const allocator_type& alloc = allocator_type()) :
-		_size(0), _mem_size(1), _alloc(alloc)
+		explicit vector(const allocator_type &alloc = allocator_type()) :
+				_size(0), _mem_size(1), _alloc(alloc)
 		{
 			try
 			{
@@ -48,28 +48,31 @@ namespace ft {
 				throw e;
 			}
 		}
-		explicit vector(size_type n, const value_type& val = value_type(),
-						const allocator_type& alloc = allocator_type()) :
-						 _size(n), _mem_size(n * 2), _alloc(alloc)
+//		explicit vector(size_type n, const value_type& val = value_type(),
+//						const allocator_type& alloc = allocator_type()) :
+//						 _size(n), _mem_size(n * 2), _alloc(alloc)
+//		{
+//			size_t i;
+//
+//			try
+//			{
+//				_vector_base = _alloc.allocate(_mem_size);
+//				for (i = 0; i < n; i++)
+//					_alloc.construct(&_vector_base[i], val);
+//			}
+//			catch (std::bad_alloc & e)
+//			{
+//				throw e;
+//			}
+//		}
+		template<class InputIterator>
+		vector(InputIterator first, InputIterator last, const allocator_type &
+		alloc = allocator_type(), typename ft::enable_if<true> * = nullptr) :
+				_alloc(alloc)
 		{
-			size_t i;
 
-			try
-			{
-				_vector_base = _alloc.allocate(_mem_size);
-				for (i = 0; i < n; i++)
-					_alloc.construct(&_vector_base[i], val);
-			}
-			catch (std::bad_alloc & e)
-			{
-				throw e;
-			}
-		}
-		template <class InputIterator>
-		vector(InputIterator first, InputIterator last, const allocator_type&
-		alloc = allocator_type()) :
-		_alloc(alloc)
-		{
+			_is_iterator(first);
+
 			if (first > last)
 			{
 				throw std::length_error("vector");
@@ -133,11 +136,13 @@ namespace ft {
 		// iterators
 		iterator begin()
 		{
+			std::cout << "not const" << std::endl;
 			return (iterator(&_vector_base[0]));
 		}
 		const_iterator begin() const
 		{
-			return (iterator(&_vector_base[0]));
+			std::cout << "const" << std::endl;
+			return (const_iterator(&_vector_base[0]));
 		}
 		iterator end()
 		{
@@ -145,7 +150,7 @@ namespace ft {
 		}
 		const_iterator end() const
 		{
-			return (iterator(&_vector_base[_size]));
+			return (const_iterator(&_vector_base[_size]));
 		}
 		reverse_iterator rbegin()
 		{
@@ -153,7 +158,7 @@ namespace ft {
 		}
 		const_reverse_iterator rbegin() const
 		{
-			return (reverse_iterator(this->end() - 1));
+			return (const_reverse_iterator(this->end() - 1));
 		}
 		reverse_iterator rend()
 		{
@@ -161,7 +166,7 @@ namespace ft {
 		}
 		const_reverse_iterator rend() const
 		{
-			return (reverse_iterator(this->begin() - 1));
+			return (const_reverse_iterator(this->begin() - 1));
 		}
 
 		// capacity
@@ -173,7 +178,7 @@ namespace ft {
 		{
 			return (_alloc.max_size());
 		}
-		void resize (size_type n, value_type val = value_type())
+		void resize(size_type n, value_type val = value_type())
 		{
 			if (n > this->max_size())
 				throw std::length_error("length_error");
@@ -181,13 +186,11 @@ namespace ft {
 			{
 				for (size_type i = n; i < _size; i++)
 					_alloc.destroy(&_vector_base[i]);
-			}
-			else if (n < _mem_size)
+			} else if (n < _mem_size)
 			{
 				for (size_type i = _size; i < n; i++)
 					_alloc.construct(&_vector_base[i], val);
-			}
-			else
+			} else
 			{
 				pointer	old_base;
 
@@ -221,7 +224,7 @@ namespace ft {
 		{
 			return (_size == 0);
 		}
-		void reserve (size_type n)
+		void reserve(size_type n)
 		{
 			pointer old_base;
 
@@ -247,21 +250,21 @@ namespace ft {
 		}
 
 		// element access
-		reference operator[] (size_type n)
-		{
-				return (_vector_base[n]);
-		}
-		const_reference operator[] (size_type n) const
+		reference operator[](size_type n)
 		{
 			return (_vector_base[n]);
 		}
-		reference at (size_type n)
+		const_reference operator[](size_type n) const
+		{
+			return (_vector_base[n]);
+		}
+		reference at(size_type n)
 		{
 			if (n >= _size)
 				throw std::out_of_range("out_of_range");
 			return (_vector_base[n]);
 		}
-		const_reference at (size_type n) const
+		const_reference at(size_type n) const
 		{
 			if (n >= _size)
 				throw std::out_of_range("out_of_range");
@@ -286,7 +289,7 @@ namespace ft {
 
 		// modifiers
 		template <class InputIterator>
-		void assign (InputIterator first, InputIterator last)
+		void assign(InputIterator first, InputIterator last)
 		{
 			size_type	i;
 			size_type	count;
@@ -298,8 +301,7 @@ namespace ft {
 			{
 				for (i = 0; i < _size; i++)
 					_alloc.destroy(&_vector_base[i]);
-			}
-			else
+			} else
 			{
 				pointer old_base;
 
@@ -320,7 +322,7 @@ namespace ft {
 			for ( ; first != last; ++first)
 				_alloc.construct(&_vector_base[i++], *first);
 		}
-		void assign (size_type n, const value_type& val)
+		void assign(size_type n, const value_type& val)
 		{
 			if (n > this->max_size())
 				throw std::length_error("length_error");
@@ -328,8 +330,7 @@ namespace ft {
 			{
 				for (size_type i = 0; i < _size; i++)
 					_alloc.destroy(&_vector_base[i]);
-			}
-			else
+			} else
 			{
 				pointer old_base;
 
@@ -350,7 +351,7 @@ namespace ft {
 				_alloc.construct(&_vector_base[i], val);
 			_size = n;
 		}
-		void push_back (const value_type& val)
+		void push_back(const value_type& val)
 		{
 			if (_size == _mem_size)
 			{
@@ -379,10 +380,10 @@ namespace ft {
 			if (!this->empty())
 				_alloc.destroy(&_vector_base[--_size]);
 		}
-		iterator insert (iterator position, const value_type& val)
+		iterator insert(iterator position, const value_type &val)
 		{
-			iterator res;
-			size_type 	i;
+			iterator	res;
+			size_type	i;
 
 			if (_size < _mem_size)
 			{
@@ -396,8 +397,7 @@ namespace ft {
 				_alloc.destroy(&_vector_base[i]);
 				_alloc.construct(&_vector_base[i], val);
 				res = iterator(&_vector_base[i]);
-			}
-			else
+			} else
 			{
 				pointer old_base;
 				iterator it = this->begin();
@@ -426,7 +426,7 @@ namespace ft {
 			_size++;
 			return (res);
 		}
-		void insert (iterator position, size_type n, const value_type& val)
+		void insert(iterator position, size_type n, const value_type &val)
 		{
 			size_type i;
 
@@ -447,8 +447,7 @@ namespace ft {
 					_alloc.destroy(&_vector_base[i]);
 					_alloc.construct(&_vector_base[i--], val);
 				}
-			}
-			else
+			} else
 			{
 				pointer old_base;
 				iterator it = this->begin();
@@ -477,7 +476,7 @@ namespace ft {
 			_size += n;
 		}
 		template <class InputIterator>
-		void insert (iterator position, InputIterator first, InputIterator
+		void insert(iterator position, InputIterator first, InputIterator
 		last)
 		{
 			pointer		old_base;
@@ -494,7 +493,7 @@ namespace ft {
 				current = this->end();
 				i = _size + count - 1;
 
-				while(current != position)
+				while (current != position)
 				{
 					--current;
 					_alloc.destroy(&_vector_base[i]);
@@ -506,8 +505,7 @@ namespace ft {
 					_alloc.destroy(&_vector_base[i]);
 					_alloc.construct(&_vector_base[i--], *last);
 				}
-			}
-			else
+			} else
 			{
 				old_base = _vector_base;
 
@@ -535,7 +533,7 @@ namespace ft {
 			}
 			_size += count;
 		}
-		iterator erase (iterator position)
+		iterator erase(iterator position)
 		{
 			size_type i;
 			iterator ite = this->end();
@@ -551,9 +549,9 @@ namespace ft {
 			}
 			_alloc.destroy(&_vector_base[i]);
 			_size--;
-			return(position);
+			return (position);
 		}
-		iterator erase (iterator first, iterator last)
+		iterator erase(iterator first, iterator last)
 		{
 			size_type count;
 			size_type i;
@@ -574,9 +572,13 @@ namespace ft {
 			}
 			return (first);
 		}
-		void swap (vector& x)
+		void swap(vector& x)
 		{
+			pointer tmp;
 
+			tmp = this->_vector_base;
+			this->_vector_base = x._vector_base;
+			x._vector_base = tmp;
 		}
 		void clear()
 		{
@@ -603,7 +605,7 @@ namespace ft {
 				_alloc.destroy(&old_vector[j]);
 			_alloc.deallocate(old_vector, _mem_size);
 		}
-
+		void	_copy(pointer base, int start, int end);
 	};
 
 	// non-member functions overloads
