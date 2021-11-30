@@ -9,8 +9,8 @@
 # include "iterator.hpp"
 # include "enable_if.hpp"
 
-// TODO: enable_if ддя методов с итереторами (assign, insert, constructor),
-//  swap, reverse iterator(test), last - first(doesn't work)
+// TODO: enable_if для методов с итераторами (assign, insert, constructor),
+//  swap, const reverse iterator, create _copy method
 
 namespace ft {
 
@@ -37,42 +37,31 @@ namespace ft {
 
 		// constructor
 		explicit vector(const allocator_type &alloc = allocator_type()) :
-				_size(0), _mem_size(1), _alloc(alloc)
+				_size(0), _mem_size(0), _alloc(alloc)
+		{}
+		explicit vector(size_type n, const value_type& val = value_type(),
+						const allocator_type& alloc = allocator_type()) :
+						 _size(n), _mem_size(n * 2), _alloc(alloc)
 		{
+			size_t i;
+
 			try
 			{
 				_vector_base = _alloc.allocate(_mem_size);
+				for (i = 0; i < n; i++)
+					_alloc.construct(&_vector_base[i], val);
 			}
 			catch (std::bad_alloc & e)
 			{
 				throw e;
 			}
 		}
-//		explicit vector(size_type n, const value_type& val = value_type(),
-//						const allocator_type& alloc = allocator_type()) :
-//						 _size(n), _mem_size(n * 2), _alloc(alloc)
-//		{
-//			size_t i;
-//
-//			try
-//			{
-//				_vector_base = _alloc.allocate(_mem_size);
-//				for (i = 0; i < n; i++)
-//					_alloc.construct(&_vector_base[i], val);
-//			}
-//			catch (std::bad_alloc & e)
-//			{
-//				throw e;
-//			}
-//		}
 		template<class InputIterator>
-		vector(InputIterator first, InputIterator last, const allocator_type &
-		alloc = allocator_type(), typename ft::enable_if<true> * = nullptr) :
-				_alloc(alloc)
+		vector(InputIterator first, typename
+		ft::enable_if<std::__is_input_iterator <InputIterator>::value, InputIterator>::type
+		last, const allocator_type & alloc =
+				allocator_type()) : _alloc(alloc)
 		{
-
-			_is_iterator(first);
-
 			if (first > last)
 			{
 				throw std::length_error("vector");
@@ -93,7 +82,8 @@ namespace ft {
 				throw e;
 			}
 		}
-		vector(const vector<T, Alloc> & x)
+		vector(const vector<T, Alloc> & x) : _size(0), _mem_size(0), _alloc(x
+		._alloc)
 		{
 			*this = x;
 		}
@@ -101,9 +91,10 @@ namespace ft {
 		// destructor
 		virtual ~vector()
 		{
-			for (size_t i = 0; i < _size; i++)
-				_alloc.destroy(&_vector_base[i]);
-			_alloc.deallocate(_vector_base, _mem_size);
+			_delete_old(_vector_base);
+//			for (size_t i = 0; i < _size; i++)
+//				_alloc.destroy(&_vector_base[i]);
+//			_alloc.deallocate(_vector_base, _mem_size);
 		}
 
 		// operator = overload
@@ -117,17 +108,16 @@ namespace ft {
 			old_base = _vector_base;
 			try
 			{
-				_vector_base = src._alloc.allocate(_mem_size);
 				_delete_old(old_base);
-				_size = src._size;
-				_mem_size = src._mem_size;
 				_alloc = src._alloc;
+				_mem_size = src._mem_size;
+				_size = src._size;
+				_vector_base = _alloc.allocate(_mem_size);
 				for (size_t i = 0; i < _size; i++)
 					_alloc.construct(&_vector_base[i], src._vector_base[i]);
 			}
 			catch (std::bad_alloc & e)
 			{
-				_vector_base = old_base;
 				throw e;
 			}
 			return (*this);
@@ -136,12 +126,10 @@ namespace ft {
 		// iterators
 		iterator begin()
 		{
-			std::cout << "not const" << std::endl;
 			return (iterator(&_vector_base[0]));
 		}
 		const_iterator begin() const
 		{
-			std::cout << "const" << std::endl;
 			return (const_iterator(&_vector_base[0]));
 		}
 		iterator end()
@@ -289,7 +277,9 @@ namespace ft {
 
 		// modifiers
 		template <class InputIterator>
-		void assign(InputIterator first, InputIterator last)
+		void assign(InputIterator first, typename
+		ft::enable_if<std::__is_input_iterator <InputIterator>::value,
+		InputIterator>::type last)
 		{
 			size_type	i;
 			size_type	count;
@@ -436,7 +426,8 @@ namespace ft {
 			if (_size + n <= _mem_size)
 			{
 				i = _size + n - 1;
-				while (position != &_vector_base[i - n + 1])
+				while (position.operator->() != &_vector_base[i - n + 1])
+					//todo Изменил position -> position.operator->()
 				{
 					_alloc.destroy(&_vector_base[i]);
 					_alloc.construct(&_vector_base[i], _vector_base[i - n]);
@@ -476,8 +467,9 @@ namespace ft {
 			_size += n;
 		}
 		template <class InputIterator>
-		void insert(iterator position, InputIterator first, InputIterator
-		last)
+		void insert(iterator position, InputIterator first, typename
+		ft::enable_if<std::__is_input_iterator <InputIterator>::value,
+		InputIterator>::type last)
 		{
 			pointer		old_base;
 			iterator	current;
@@ -584,6 +576,7 @@ namespace ft {
 		{
 			for (size_type i = 0; i < _size; i++)
 				_alloc.destroy(&_vector_base[i]);
+			_size = 0;
 		}
 
 		// allocator
@@ -603,9 +596,25 @@ namespace ft {
 		{
 			for (size_type j = 0; j < _size; j++)
 				_alloc.destroy(&old_vector[j]);
-			_alloc.deallocate(old_vector, _mem_size);
+			if (_mem_size != 0)
+				_alloc.deallocate(old_vector, _mem_size);
 		}
-		void	_copy(pointer base, int start, int end);
+		template<typename InputIterator>
+		void	_copy(int start, InputIterator first, InputIterator last)
+		{
+			for ( ; first != last; ++first)
+				_alloc.construct(&_vector_base[start++], *first);
+		}
+		void	_copy(int start, int count, value_type val)
+		{
+			for (int i = 0; i < count; i++)
+				_alloc.construct(&_vector_base[start + i], val);
+		}
+		void	_copy(int start, int count, pointer src)
+		{
+			for (int i = 0; i < count; i++)
+				_alloc.construct(&_vector_base[start + i], src[i]);
+		}
 	};
 
 	// non-member functions overloads
@@ -636,7 +645,10 @@ namespace ft {
 		i = 0;
 		while (i < lhs.size() && i < rhs.size())
 		{
-			if (lhs[i] > rhs[i])
+			//todo lhs[i] < rhs[i] всегда true
+			if (lhs[i] < rhs[i])
+				return true;
+			if (lhs[i] >= rhs[i])
 				return (false);
 			i++;
 		}
@@ -655,7 +667,7 @@ namespace ft {
 	template <class T, class Alloc>
 	bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
 	{
-		return (lhs > rhs || lhs == rhs);
+		return (rhs <= lhs);
 	}
 
 	template <class T, class Alloc>

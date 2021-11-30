@@ -7,7 +7,7 @@ set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -std=c++98")
 
 include_directories(.)
 
-add_executable(ft_containers
+add_executable(ft_containers_vector
         tmp.cpp
         vector.hpp
         stack.hpp
@@ -17,6 +17,16 @@ add_executable(ft_containers
         iterator.hpp
         my_print.hpp)
 
+add_executable(ft_container_stack
+        stack_test.cpp
+        stack.hpp
+        enable_if.hpp
+        my_print.hpp
+        )
+
 add_executable(ft_pair
         pair_tmp.cpp
         pair.hpp)
+
+add_executable(iterator
+        test.cpp)

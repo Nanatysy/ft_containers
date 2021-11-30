@@ -5,6 +5,8 @@
 #ifndef FT_CONTAINERS_ITERATOR_HPP
 #define FT_CONTAINERS_ITERATOR_HPP
 
+//TODO: const_reverse_iterator (no constructor)
+
 namespace ft {
 
 	template< class Iter >
@@ -49,10 +51,14 @@ namespace ft {
 		typedef typename ft::iterator_traits<Iter>::reference reference;
 
 		_iterator() : _ptr(nullptr) {}
-		_iterator(Iter data) : _ptr(data) {}
+		explicit _iterator(Iter data) : _ptr(data) {}
 		_iterator(const _iterator & src)
 		{
 			*this = src;
+		}
+		_iterator(_iterator<pointer> iterator)
+		{
+			_ptr = iterator.operator->();
 		}
 		virtual ~_iterator() {}
 
@@ -110,10 +116,18 @@ namespace ft {
 			_iterator<Iter> tmp(_ptr + n);
 			return (tmp);
 		}
+		friend _iterator<Iter> operator+(difference_type n, _iterator it)
+		{
+			return (it + n);
+		}
 		_iterator<Iter> operator-(difference_type n) const
 		{
 			_iterator<Iter> tmp(_ptr - n);
 			return (tmp);
+		}
+		friend difference_type operator-(_iterator left, _iterator right)
+		{
+			return (left._ptr - right._ptr);
 		}
 		bool operator<(const _iterator<Iter> & src) const
 		{
@@ -168,6 +182,10 @@ namespace ft {
 		_reverse_iterator(const _reverse_iterator & src)
 		{
 			*this = src;
+		}
+		_reverse_iterator(_reverse_iterator<_iterator < pointer> > iterator)
+		{
+			_ptr = iterator.operator->();
 		}
 		virtual ~_reverse_iterator() {}
 
