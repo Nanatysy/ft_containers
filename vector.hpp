@@ -10,8 +10,6 @@
 # include "enable_if.hpp"
 # include "compare.hpp"
 
-// TODO: create _copy method
-
 namespace ft {
 
 	template < class T, class Alloc = std::allocator<T> >
@@ -43,13 +41,10 @@ namespace ft {
 						const allocator_type& alloc = allocator_type()) :
 						 _size(n), _mem_size(n * 2), _alloc(alloc)
 		{
-			size_t i;
-
 			try
 			{
 				_vector_base = _alloc.allocate(_mem_size);
-				for (i = 0; i < n; i++)
-					_alloc.construct(&_vector_base[i], val);
+				_copy(0, n, val);
 			}
 			catch (std::bad_alloc & e)
 			{
@@ -73,9 +68,7 @@ namespace ft {
 				_size = count;
 				_mem_size = count * 2;
 				_vector_base = _alloc.allocate(_mem_size);
-				count = 0;
-				for (; first != last; first++)
-					_alloc.construct(&_vector_base[count++], *first);
+				_copy(0, first, last);
 			}
 			catch (std::bad_alloc & e)
 			{
@@ -92,9 +85,6 @@ namespace ft {
 		virtual ~vector()
 		{
 			_delete_old(_vector_base);
-//			for (size_t i = 0; i < _size; i++)
-//				_alloc.destroy(&_vector_base[i]);
-//			_alloc.deallocate(_vector_base, _mem_size);
 		}
 
 		// operator = overload
@@ -113,8 +103,7 @@ namespace ft {
 				_mem_size = src._mem_size;
 				_size = src._size;
 				_vector_base = _alloc.allocate(_mem_size);
-				for (size_t i = 0; i < _size; i++)
-					_alloc.construct(&_vector_base[i], src._vector_base[i]);
+				_copy(0, _size, src._vector_base);
 			}
 			catch (std::bad_alloc & e)
 			{
@@ -174,11 +163,12 @@ namespace ft {
 			{
 				for (size_type i = n; i < _size; i++)
 					_alloc.destroy(&_vector_base[i]);
-			} else if (n < _mem_size)
+			}
+			else if (n < _mem_size)
 			{
-				for (size_type i = _size; i < n; i++)
-					_alloc.construct(&_vector_base[i], val);
-			} else
+				_copy(_size, n, val);
+			}
+			else
 			{
 				pointer	old_base;
 
@@ -186,13 +176,8 @@ namespace ft {
 				try
 				{
 					_vector_base = _alloc.allocate(n * 2);
-					for (size_type i = 0; i < n; i++)
-					{
-						if (i < _size)
-							_alloc.construct(&_vector_base[i], old_base[i]);
-						else
-							_alloc.construct(&_vector_base[i], val);
-					}
+					_copy(0, _size, old_base);
+					_copy(_size, n, val);
 					_delete_old(old_base);
 					_mem_size = n * 2;
 				}
@@ -225,8 +210,7 @@ namespace ft {
 			try
 			{
 				_vector_base = _alloc.allocate(n);
-				for (size_type i = 0; i < _size; i++)
-					_alloc.construct(&_vector_base[i], old_base[i]);
+				_copy(0, _size, old_base);
 				_delete_old(old_base);
 				_mem_size = n;
 			}
@@ -324,7 +308,8 @@ namespace ft {
 			{
 				for (size_type i = 0; i < _size; i++)
 					_alloc.destroy(&_vector_base[i]);
-			} else
+			}
+			else
 			{
 				pointer old_base;
 
@@ -341,8 +326,7 @@ namespace ft {
 					throw e;
 				}
 			}
-			for (size_type i = 0; i < n; i++)
-				_alloc.construct(&_vector_base[i], val);
+			_copy(0, n, val);
 			_size = n;
 		}
 		void push_back(const value_type& val)
@@ -355,8 +339,7 @@ namespace ft {
 				try
 				{
 					_vector_base = _alloc.allocate(_size * 2);
-					for (size_type i = 0; i < _size; i++)
-						_alloc.construct(&_vector_base[i], old_base[i]);
+					_copy(0, _size, old_base)
 
 					_delete_old(old_base);
 					_mem_size = _size * 2;
@@ -382,7 +365,7 @@ namespace ft {
 			if (_size < _mem_size)
 			{
 				i = _size;
-				while (position != &_vector_base[i])
+				while (position.operator->() != &_vector_base[i])
 				{
 					_alloc.destroy(&_vector_base[i]);
 					_alloc.construct(&_vector_base[i], _vector_base[i - 1]);
@@ -391,7 +374,8 @@ namespace ft {
 				_alloc.destroy(&_vector_base[i]);
 				_alloc.construct(&_vector_base[i], val);
 				res = iterator(&_vector_base[i]);
-			} else
+			}
+			else
 			{
 				pointer old_base;
 				iterator it = this->begin();
@@ -431,7 +415,6 @@ namespace ft {
 			{
 				i = _size + n - 1;
 				while (position.operator->() != &_vector_base[i - n + 1])
-					//todo Изменил position -> position.operator->()
 				{
 					_alloc.destroy(&_vector_base[i]);
 					_alloc.construct(&_vector_base[i], _vector_base[i - n]);

@@ -157,7 +157,7 @@ int main(void)
 
 //		foo.insert(it, 5, 5);
 ////		it = foo.insert(it, 6);
-////		it = foo.insert(it, 7);
+		it = foo.insert(it, 7);
 //		ft::vector<int>::iterator ite = foo.begin();
 		std::for_each(it, foo.end(), my_print<int>);
 		std::cout << std::endl;
@@ -241,7 +241,7 @@ int main(void)
 
 
 
-//		ft::swap(f1, f2);
+		ft::swap(f1, f2);
 		f1.swap(f2);
 
 
@@ -297,17 +297,6 @@ int main(void)
 		print_info(f1);
 
 		std::cout << "-------------------------" << std::endl;
-
-		{
-			std::vector<float> f4(5, 0.1);
-
-			std::for_each(f4.begin(), f4.end(), my_print<float>);
-			print_info(f4);
-			f4.assign(f4.begin(), f4.end() - 1);
-			std::for_each(f4.begin(), f4.end(), my_print<float>);
-			print_info(f4);
-
-		}
 
 	}
 
