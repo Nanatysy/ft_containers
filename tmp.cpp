@@ -34,6 +34,8 @@ int main(void)
 	std::vector<float> fff(6, 5.8);
 
 	ft::vector<int> v_i;
+
+	std::allocator<int> __unused al = v_i.get_allocator();
 	ft::vector<int> v_i_5(4, 7);
 	ft::vector<int> v_i_2(ref.begin(), ref.end());
 	const ft::vector<int> v_i_3(ref.begin(), ref.end());
@@ -125,7 +127,7 @@ int main(void)
 								  "<-------------"	<< std::endl;
 		std::cout << std::endl;
 
-		std::vector<int> fo(3,100);
+		std::vector<int> fo(8,100);
 		std::vector<int> ba(2,100);
 
 		ft::vector<int> foo(fo.begin(), fo.end());
@@ -223,7 +225,89 @@ int main(void)
 		std::cout << v_s.back() << std::endl;
 	}
 	{
-		std::cout << "--------------Compare--------------" << std::endl;
+		std::cout << "----------->  Swap  <-----------" << std::endl;
+
+		ft::vector<float> f1(5, 0.1);
+		ft::vector<float> f2(10, 1.2);
+
+		std::cout << "f1: ";
+		std::for_each(f1.begin(), f1.end(), my_print<float>);
+		print_info(f1);
+		std::cout << std::endl;
+		std::cout << "f2: ";
+		std::for_each(f2.begin(), f2.end(), my_print<float>);
+		print_info(f2);
+		std::cout << std::endl;
+
+
+
+//		ft::swap(f1, f2);
+		f1.swap(f2);
+
+
+		std::cout << "f1: ";
+		std::for_each(f1.begin(), f1.end(), my_print<float>);
+		print_info(f1);
+		std::cout << std::endl;
+		std::cout << "f2: ";
+		std::for_each(f2.begin(), f2.end(), my_print<float>);
+		print_info(f2);
+		std::cout << std::endl;
+
+		ft::vector<float>::iterator it = f1.begin();
+		f1[0] = 0.5;
+		f1[1] = 0.6;
+
+		std::cout << "-------------------------" << std::endl;
+
+		std::cout << "f1: ";
+		std::for_each(f1.begin(), f1.end(), my_print<float>);
+		std::cout << std::endl;
+
+		f1.erase(it);
+
+		std::cout << "f1: ";
+		std::for_each(f1.begin(), f1.end(), my_print<float>);
+		print_info(f1);
+
+		f1.erase(f1.begin(), f1.end());
+		std::cout << "f1: ";
+		std::for_each(f1.begin(), f1.end(), my_print<float>);
+		print_info(f1);
+
+		std::cout << "-------------------------" << std::endl;
+
+		std::cout << "f2: ";
+		std::for_each(f2.begin(), f2.end(), my_print<float>);
+		print_info(f2);
+		f1.assign(f2.begin(), f2.end());
+		std::cout << "f1: ";
+		std::for_each(f1.begin(), f1.end(), my_print<float>);
+		print_info(f1);
+
+		f1.assign(f1.begin(), f1.end() - 1);
+		std::cout << "f1: ";
+		std::for_each(f1.begin(), f1.end(), my_print<float>);
+		print_info(f1);
+
+
+		f1.assign(3, 0.8);
+		std::cout << "f1: ";
+		std::for_each(f1.begin(), f1.end(), my_print<float>);
+		print_info(f1);
+
+		std::cout << "-------------------------" << std::endl;
+
+		{
+			std::vector<float> f4(5, 0.1);
+
+			std::for_each(f4.begin(), f4.end(), my_print<float>);
+			print_info(f4);
+			f4.assign(f4.begin(), f4.end() - 1);
+			std::for_each(f4.begin(), f4.end(), my_print<float>);
+			print_info(f4);
+
+		}
 
 	}
 

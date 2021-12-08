@@ -15,7 +15,8 @@ add_executable(ft_containers_vector
         pair.hpp
         enable_if.hpp
         iterator.hpp
-        my_print.hpp)
+        my_print.hpp
+        compare.hpp)
 
 add_executable(ft_container_stack
         stack_test.cpp

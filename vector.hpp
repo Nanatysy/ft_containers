@@ -8,9 +8,9 @@
 # include <iostream>
 # include "iterator.hpp"
 # include "enable_if.hpp"
+# include "compare.hpp"
 
-// TODO: enable_if для методов с итераторами (assign, insert, constructor),
-//  swap, const reverse iterator, create _copy method
+// TODO: create _copy method
 
 namespace ft {
 
@@ -58,7 +58,7 @@ namespace ft {
 		}
 		template<class InputIterator>
 		vector(InputIterator first, typename
-		ft::enable_if<std::__is_input_iterator <InputIterator>::value, InputIterator>::type
+		ft::enable_if<ft::is_iterator <InputIterator>::value, InputIterator>::type
 		last, const allocator_type & alloc =
 				allocator_type()) : _alloc(alloc)
 		{
@@ -278,20 +278,17 @@ namespace ft {
 		// modifiers
 		template <class InputIterator>
 		void assign(InputIterator first, typename
-		ft::enable_if<std::__is_input_iterator <InputIterator>::value,
-		InputIterator>::type last)
+		ft::enable_if<ft::is_iterator <InputIterator>::value, InputIterator>::type last)
 		{
 			size_type	i;
 			size_type	count;
+			value_type tmp;
 
 			count = std::abs(last - first);
 			if (count > this->max_size())
 				throw std::length_error("length_error");
-			if (count < _mem_size)
-			{
-				for (i = 0; i < _size; i++)
-					_alloc.destroy(&_vector_base[i]);
-			} else
+
+			if (count >= _mem_size)
 			{
 				pointer old_base;
 
@@ -310,7 +307,14 @@ namespace ft {
 			}
 			i = 0;
 			for ( ; first != last; ++first)
-				_alloc.construct(&_vector_base[i++], *first);
+			{
+				tmp = *first;
+				_alloc.destroy(&_vector_base[i]);
+				_alloc.construct(&_vector_base[i++], tmp);
+			}
+			for ( ; i < _size; i++)
+				_alloc.destroy(&_vector_base[i]);
+			_size = count;
 		}
 		void assign(size_type n, const value_type& val)
 		{
@@ -468,8 +472,7 @@ namespace ft {
 		}
 		template <class InputIterator>
 		void insert(iterator position, InputIterator first, typename
-		ft::enable_if<std::__is_input_iterator <InputIterator>::value,
-		InputIterator>::type last)
+		ft::enable_if<ft::is_iterator <InputIterator>::value, InputIterator>::type last)
 		{
 			pointer		old_base;
 			iterator	current;
@@ -566,11 +569,10 @@ namespace ft {
 		}
 		void swap(vector& x)
 		{
-			pointer tmp;
-
-			tmp = this->_vector_base;
-			this->_vector_base = x._vector_base;
-			x._vector_base = tmp;
+			std::swap(this->_vector_base, x._vector_base);
+			std::swap(this->_alloc, x._alloc);
+			std::swap(this->_size, x._size);
+			std::swap(this->_mem_size, x._mem_size);
 		}
 		void clear()
 		{
@@ -621,16 +623,7 @@ namespace ft {
 	template <class T, class Alloc>
 	bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
 	{
-		if (lhs.size() == rhs.size())
-		{
-			for (size_t i = 0; i < lhs.size(); i++)
-			{
-				if (lhs[i] != rhs[i])
-					return (false);
-			}
-			return (true);
-		}
-		return (false);
+		return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
 	}
 	template <class T, class Alloc>
 	bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
@@ -640,19 +633,7 @@ namespace ft {
 	template <class T, class Alloc>
 	bool operator< (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
 	{
-		size_t	i;
-
-		i = 0;
-		while (i < lhs.size() && i < rhs.size())
-		{
-			//todo lhs[i] < rhs[i] всегда true
-			if (lhs[i] < rhs[i])
-				return true;
-			if (lhs[i] >= rhs[i])
-				return (false);
-			i++;
-		}
-		return (true);
+		return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 	}
 	template <class T, class Alloc>
 	bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)

@@ -34,8 +34,8 @@ namespace ft {
 		typedef std::random_access_iterator_tag iterator_category;
 		typedef T value_type;
 		typedef ptrdiff_t difference_type;
-		typedef T* pointer;
-		typedef T& reference;
+		typedef const T* pointer;
+		typedef const T& reference;
 	};
 
 	template<class Iter>
@@ -56,7 +56,7 @@ namespace ft {
 		{
 			*this = src;
 		}
-		_iterator(_iterator<pointer> iterator)
+		explicit _iterator(_iterator<value_type *> iterator)
 		{
 			_ptr = iterator.operator->();
 		}
@@ -183,9 +183,9 @@ namespace ft {
 		{
 			*this = src;
 		}
-		_reverse_iterator(_reverse_iterator<_iterator < pointer> > iterator)
+		_reverse_iterator(_reverse_iterator<_iterator < value_type *> > iterator)
 		{
-			_ptr = iterator.operator->();
+			_ptr = _iterator<const value_type *>(iterator.operator->());
 		}
 		virtual ~_reverse_iterator() {}
 
@@ -243,10 +243,18 @@ namespace ft {
 			_reverse_iterator<Iter> tmp(_ptr - n);
 			return (tmp);
 		}
+		friend _reverse_iterator<Iter> operator+(difference_type n, _reverse_iterator it)
+		{
+			return (n + it._ptr);
+		}
 		_reverse_iterator<Iter> operator-(difference_type n) const
 		{
 			_reverse_iterator<Iter> tmp(_ptr + n);
 			return (tmp);
+		}
+		friend difference_type operator-(_reverse_iterator left, _reverse_iterator right)
+		{
+			return (left._ptr - right._ptr);
 		}
 		bool operator<(const _reverse_iterator<Iter> & src) const
 		{

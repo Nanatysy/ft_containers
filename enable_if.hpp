@@ -17,22 +17,27 @@ namespace ft {
 		typedef T type;
 	};
 
-	template<typename T>
-	struct is_iterator : public std::__is_input_iterator<T>
-	{};
 
 	template<typename T>
-	struct __attribute__((unused)) is_input_iterator : public std::false_type{};
+	struct is_input_iterator : public std::false_type{};
 	template<>
-	struct __attribute__((unused)) is_input_iterator<std::random_access_iterator_tag> : public
+	struct is_input_iterator<std::random_access_iterator_tag> : public
         std::true_type{};
 	template<>
-	struct __attribute__((unused)) is_input_iterator<std::bidirectional_iterator_tag> : public
+	struct is_input_iterator<std::bidirectional_iterator_tag> : public
 	        std::true_type{};
 	template<>
-	struct __attribute__((unused)) is_input_iterator<std::forward_iterator_tag> : public std::true_type{};
+	struct is_input_iterator<std::forward_iterator_tag> : public std::true_type{};
 	template<>
-	struct __attribute__((unused)) is_input_iterator<std::input_iterator_tag> : public std::true_type{};
+	struct is_input_iterator<std::input_iterator_tag> : public std::true_type{};
+
+	template<class T, class U = typename T::iterator_category>
+	struct is_iterator : public ft::is_input_iterator<U>
+	{};
+
+//	template<class T>
+//	struct is_iterator : public ft::is_input_iterator<T>
+//	{};
 
 }
 
