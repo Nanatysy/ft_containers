@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.20)
 project(ft_containers)
 
-set(CMAKE_CXX_STANDARD 98)
+set(CMAKE_CXX_STANDARD 11)
 
-set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -std=c++98")
+#set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -std=c++98")
 
 include_directories(.)
 
@@ -44,3 +44,6 @@ add_executable(vector_test
         compare.hpp
         iterator.hpp
         )
+
+add_executable(print_tree
+        tree_output.cpp)

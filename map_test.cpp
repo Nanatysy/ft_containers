@@ -11,15 +11,19 @@ int main()
 //	first.print_tree();
 
 
-	ft::map<int, int>::iterator it = first.begin();
-	ft::map<int, int>::iterator ite = first.end();
+//	ft::map<int, int>::iterator it = first.begin();
+//	ft::map<int, int>::iterator ite = first.end();
 
-	while (it != ite)
-	{
-		std::cout << it->second << " ";
-		++it;
-	}
-	std::cout << std::endl;
+//	while (it != ite)
+//	{
+//		std::cout << it->second << " ";
+//		++it;
+//	}
+//	std::cout << std::endl;
+
+//	first.print_tree();
+
+	first.print_tree();
 
 //	ft::map<int, int> second;
 //	second = first;

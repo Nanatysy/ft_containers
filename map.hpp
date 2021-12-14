@@ -11,6 +11,7 @@
 #include "pair.hpp"
 #include "enable_if.hpp"
 #include "iterator.hpp"
+#include <queue>
 
 namespace ft
 {
@@ -65,19 +66,18 @@ namespace ft
 					return (*this);
 				if (_ptr->right == _tree->_leaf || _ptr->right == _tree->_begin)
 				{
-					parent = _ptr->parent; // вернуться у самому главному родителю
-					if (parent)
+					parent = _ptr->parent;
+					while (parent && parent->right == _ptr)
 					{
-						if (_ptr == parent->left)
-							_ptr = parent;
-						else
-							_ptr = parent->parent;
+						_ptr = parent;
+						parent = parent->parent;
 					}
+					_ptr = parent;
 				}
 				else
 				{
-					_ptr = _ptr->right; // направо и до упора налево;
-					while (_ptr->left != _tree->_leaf)
+					_ptr = _ptr->right;
+					while (_ptr != _tree->_end && _ptr->left != _tree->_leaf)
 						_ptr = _ptr->left;
 				}
 				return (*this);
@@ -95,21 +95,24 @@ namespace ft
 			{
 				pointer parent;
 
-				if (_ptr == _tree->_begin)
+				if (_ptr == _tree->_end)
 					return (*this);
-				if (_ptr->left == _tree->_leaf || _ptr->left == _tree->_end)
+				if (_ptr->left == _tree->_leaf || _ptr->left == _tree->_enf)
 				{
 					parent = _ptr->parent;
-					if (parent)
+					while (parent && parent->left == _ptr)
 					{
-						if (_ptr == parent->right)
-							_ptr = parent;
-						else
-							_ptr = parent->parent;
+						_ptr = parent;
+						parent = parent->parent;
 					}
+					_ptr = parent;
 				}
 				else
+				{
 					_ptr = _ptr->left;
+					while (_ptr != _tree->_begin && _ptr->left != _tree->_leaf)
+						_ptr = _ptr->left;
+				}
 				return (*this);
 			}
 
@@ -178,10 +181,17 @@ namespace ft
 			_end = _new_node();
 //			_root = _leaf;
 
+			// todo: delete later
 			_root = _new_node(ft::make_pair(3, 3));
-			_root->left = _new_node(ft::make_pair(1, 1));
+			_root->left = _new_node(ft::make_pair(2, 2));
 			_root->left->parent = _root;
-			_root->left->left = _begin;
+			_root->left->left = _new_node(ft::make_pair(-1, -1));
+			_root->left->left->parent = _root->left;
+			_root->left->right = _new_node(ft::make_pair(1, 1));
+			_root->left->right->parent = _root->left;
+			_root->left->right->right = _new_node(ft::make_pair(0, 0));
+			_root->left->right->right->parent = _root->left->right;
+			_root->left->left->left = _begin;
 			_begin->parent = _root->left;
 			_root->right = _new_node(ft::make_pair(6, 6));
 			_root->right->parent = _root;
@@ -251,22 +261,84 @@ namespace ft
 		}
 //		const_iterator end() const;
 
-//		void	print_tree() const
-//		{
-//			_print(*_root);
-//			std::cout << std::endl;
-//		}
-//		void	_print(const t_node & src) const
-//		{
-//			if (!_is_end(src))
+		void	print_tree() const
+		{
+//			t_node *tmp;
+//			int num = 0;
+//			int stars = 0;
+//			int row = 0;
+//
+//
+//
+//			std::queue<t_node *> next;
+//
+//			next.push(_root);
+//
+//			while (!next.empty())
 //			{
-//				_print(*src.left);
-//				std::cout << " " << src.val.second << " ";
-//				_print(*src.right);
+//				tmp = next.front();
+//				if (!_is_end(*tmp))
+//				{
+//					std::cout << tmp->val.second << " ";
+//					num++;
+//				}
+//				else
+//				{
+//					std::cout << "* ";
+//					stars++;
+//				}
+//				next.pop();
+//				if (!_is_end(*tmp))
+//				{
+//					next.push(tmp->left);
+//					next.push(tmp->right);
+//				}
+//
 //			}
-//			else
-//				std::cout << " * ";
-//		}
+//			std::cout << "|" << std::endl;
+			print2D(_root);
+		}
+#define COUNT 5
+
+		void print2DUtil(t_node *root, int space) const
+		{
+			// Base case
+			if (root == _leaf || root == _begin || root == _end)
+			{
+				for (int i = 0; i < space; i++)
+					std::cout<<" ";
+				std::cout<<"\x1b[34m" << "*" << "\x1b[0m";
+				return;
+			}
+
+			// Increase distance between levels
+			space += COUNT;
+
+			// Process right child first
+			print2DUtil(root->right, space);
+
+			// Print current node after space
+			// count
+			std::cout << std::endl;
+			for (int i = COUNT; i < space; i++)
+				std::cout<<" ";
+			if (root->color == RED)
+				std::cout << "\x1b[31m";
+			else
+				std::cout << "\x1b[34m";
+			std::cout<<root->val.second<<"\n";
+			std::cout << "\x1b[0m";
+
+			// Process left child
+			print2DUtil(root->left, space);
+		}
+
+		void print2D(t_node *root) const
+		{
+			// Pass initial space count as 0
+			print2DUtil(root, 0);
+		}
+
 
 	private:
 		t_node *_new_node()
