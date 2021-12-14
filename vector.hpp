@@ -339,7 +339,7 @@ namespace ft {
 				try
 				{
 					_vector_base = _alloc.allocate(_size * 2);
-					_copy(0, _size, old_base)
+					_copy(0, _size, old_base);
 
 					_delete_old(old_base);
 					_mem_size = _size * 2;

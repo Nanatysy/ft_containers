@@ -21,9 +21,9 @@ int main()
 //	std::for_each(test.begin(), test.end(), my_print<int>);
 //	std::cout << std::endl;
 
-	ft::vector<int>::reverse_iterator start = test.rbegin();
-	ft::vector<int>::reverse_iterator it = test.rbegin();
-	ft::vector<int>::reverse_iterator end = test.rend();
+	ft::vector<int>::const_iterator start = test.begin();
+	ft::vector<int>::const_iterator it = test.begin();
+	ft::vector<int>::const_iterator end = test.end();
 
 	std::cout << test.size() << std::endl;
 	std::cout << end - start << std::endl;
@@ -51,7 +51,7 @@ int main()
 	std::for_each(test.begin(), test.end(), my_print<int>);
 	std::cout << std::endl;
 
-	it[2] = 5;
+//	it[2] = 5;
 	std::for_each(test.begin(), test.end(), my_print<int>);
 	std::cout << std::endl;
 

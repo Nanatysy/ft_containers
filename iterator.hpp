@@ -56,7 +56,7 @@ namespace ft {
 		{
 			*this = src;
 		}
-		explicit _iterator(_iterator<value_type *> iterator)
+		_iterator(_iterator<value_type *> iterator)
 		{
 			_ptr = iterator.operator->();
 		}

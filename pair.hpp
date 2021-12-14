@@ -22,18 +22,12 @@ namespace ft {
 		pair( const T1& x, const T2& y ) : first(x), second(y) {}
 		template< class U1, class U2 >
 		pair( const pair<U1, U2>& p ) : first(p.first), second(p.second) {}
-		pair( const pair& p )
-		{
-			*this = p;
-		}
 
-		pair& operator=( const pair& other )
+		pair& operator=( const pair & other )
 		{
 			if (*this == other)
 				return (*this);
 
-//		this->first(other.first);
-//		this->second(other.second);
 			this->first = other.first;
 			this->second = other.second;
 			return(*this);

@@ -10,8 +10,6 @@ include_directories(.)
 add_executable(ft_containers_vector
         tmp.cpp
         vector.hpp
-        stack.hpp
-        map.hpp
         pair.hpp
         enable_if.hpp
         iterator.hpp
@@ -25,9 +23,24 @@ add_executable(ft_container_stack
         my_print.hpp
         )
 
+add_executable(ft_container_map
+        map.hpp
+        enable_if.hpp
+        pair.hpp
+        map_test.cpp)
+
 add_executable(ft_pair
         pair_tmp.cpp
         pair.hpp)
 
 add_executable(iterator
         test.cpp)
+
+add_executable(vector_test
+        Test/tests.cpp
+        Test/test_color.hpp
+        vector.hpp
+        enable_if.hpp
+        compare.hpp
+        iterator.hpp
+        )
