@@ -179,47 +179,130 @@ namespace ft
 			_leaf = _new_node();
 			_begin = _new_node();
 			_end = _new_node();
-//			_root = _leaf;
+			_root = _leaf;
+			_root->parent = _leaf;
+		}
+		template <class InputIterator>
+		map (InputIterator first, typename ft::enable_if<ft::is_iterator <InputIterator>::value, InputIterator>::type last,
+			 const key_compare& comp = key_compare(),
+			 const allocator_type& alloc = allocator_type()) : _compare(comp), _alloc(alloc), _size(0)
+		{
+			//TODO: breaks iterator
+			t_node	*parent;
+			t_node	*tmp_r;
+			t_node	*tmp_l;
+			t_node	*child;
+			t_node	*uncle;
+			bool	direction;
 
-			// todo: delete later
-			_root = _new_node(ft::make_pair(3, 3));
-			_root->left = _new_node(ft::make_pair(2, 2));
-			_root->left->parent = _root;
-			_root->left->left = _new_node(ft::make_pair(-1, -1));
-			_root->left->left->parent = _root->left;
-			_root->left->right = _new_node(ft::make_pair(1, 1));
-			_root->left->right->parent = _root->left;
-			_root->left->right->right = _new_node(ft::make_pair(0, 0));
-			_root->left->right->right->parent = _root->left->right;
-			_root->left->left->left = _begin;
-			_begin->parent = _root->left;
-			_root->right = _new_node(ft::make_pair(6, 6));
-			_root->right->parent = _root;
-			_root->right->left = _new_node(ft::make_pair(4, 4));
-			_root->right->left->parent = _root->right;
-			_root->right->right = _new_node(ft::make_pair(8, 8));
-			_root->right->right->parent = _root->right;
-			_root->right->right->right = _end;
-			_end->parent = _root->right->right;
+			_leaf = _new_node();
+			_begin = _new_node();
+			_end = _new_node();
+			_root = _leaf;
+			_root->parent = _leaf;
 
+			while (first != last)
+			{
+				t_node *new_elem = _new_node(*first);
+				parent = _root;
+				if (!_is_end(*parent))
+				{
+					// search for insertion place, somehow check if key already exist
+					tmp_r = parent->right;
+					tmp_l = parent->left;
+					direction = _compare(new_elem->val.first, parent->val.first);
+					if (!direction && new_elem->val.first == parent->val.first)
+						continue ; // skip if key already exist ??(or change value)
+					while ((!_is_end(*tmp_l) || direction == false) && (!_is_end(*tmp_r) || direction == true))
+					{
+						parent = direction ? tmp_l : tmp_r;
+						tmp_l = parent->left;
+						tmp_r = parent->right;
+						direction = _compare(new_elem->val.first, parent->val.first);
+					}
+					child = direction ? tmp_l : tmp_r;
 
+					// insert red node
+					if (child == _begin)
+					{
+						new_elem->left = _begin;
+						_begin->parent = new_elem;
+					}
+					else if (child == _end)
+					{
+						new_elem->right = _end;
+						_end->parent = new_elem;
+					}
+					direction ? parent->left = new_elem : parent->right = new_elem;
+					new_elem->parent = parent;
+					child = new_elem;
+
+//					print_tree();
+//					std::cout << std::endl << "------------------" << std::endl;
+
+					//check if tree isn't balanced
+					while (parent->color == RED && child->color == RED)
+					{
+						// balance
+						tmp_l = parent->parent;
+						uncle = (tmp_l->right == parent) ? tmp_l->left : tmp_l->right;
+						if (uncle->color == RED)
+							child = _case_uncle_red(child);
+						else if ((parent->parent->left == parent && parent->left == child) || (parent->parent->right == parent && parent->right == child))
+						{
+							if (tmp_l == _root)
+							{
+								child = _case_uncle_black_line(child);
+								child->parent = _leaf;
+								_root = child;
+							}
+							else
+							{
+								if (tmp_l == tmp_l->parent->left)
+								{
+									tmp_r = tmp_l->parent;
+									child = _case_uncle_black_line(child);
+									tmp_r->left = child;
+									child->parent = tmp_r;
+								}
+								else
+								{
+									tmp_r = tmp_l->parent;
+									child = _case_uncle_black_line(child);
+									tmp_r->right = child;
+									child->parent = tmp_r;
+								}
+							}
+						}
+						else
+						{
+							child = _case_uncle_black_triangle(child);
+						}
+						parent = child->parent;
+					}
+
+				}
+				else
+				{
+					// new element - root
+					_root = _case_root(new_elem);
+				}
+
+//				print_tree();
+//				std::cout << std::endl << "------------------" << std::endl;
+
+				first++;
+				_size++;
+			}
 
 		}
-//		template <class InputIterator>
-//		map (InputIterator first, typename ft::enable_if<ft::is_iterator <InputIterator>::value, InputIterator>::type last,
-//			 const key_compare& comp = key_compare(),
-//			 const allocator_type& alloc = allocator_type()) : _compare(comp), _alloc(alloc)
-//		{
-//			_leaf = _new_node();
-//			_begin = _new_node();
-//			_end = _new_node();
-//		}
 		map (const map<Key, T> & x) : _size(0)
 		{
 			_leaf = _new_node();
 			_begin = _new_node();
 			_end = _new_node();
 			_root = _leaf;
+			_root->parent = _leaf;
 			*this = x;
 		}
 
@@ -239,6 +322,7 @@ namespace ft
 			_begin = _new_node();
 			_end = _new_node();
 			_root = _new_node(*x._root, x);
+			_root->parent = _leaf;
 			return (*this);
 		}
 
@@ -252,6 +336,8 @@ namespace ft
 
 		iterator begin()
 		{
+			if (_size == 0)
+				return (iterator(_end, this));
 			return (iterator(_begin->parent, this));
 		}
 //		const_iterator begin() const;
@@ -263,39 +349,6 @@ namespace ft
 
 		void	print_tree() const
 		{
-//			t_node *tmp;
-//			int num = 0;
-//			int stars = 0;
-//			int row = 0;
-//
-//
-//
-//			std::queue<t_node *> next;
-//
-//			next.push(_root);
-//
-//			while (!next.empty())
-//			{
-//				tmp = next.front();
-//				if (!_is_end(*tmp))
-//				{
-//					std::cout << tmp->val.second << " ";
-//					num++;
-//				}
-//				else
-//				{
-//					std::cout << "* ";
-//					stars++;
-//				}
-//				next.pop();
-//				if (!_is_end(*tmp))
-//				{
-//					next.push(tmp->left);
-//					next.push(tmp->right);
-//				}
-//
-//			}
-//			std::cout << "|" << std::endl;
 			print2D(_root);
 		}
 #define COUNT 5
@@ -351,7 +404,6 @@ namespace ft
 			next->color = BLACK;
 			return (next);
 		}
-
 		t_node *_new_node(ft::pair<const Key, T> value)
 		{
 			t_node *next = new t_node;
@@ -363,7 +415,6 @@ namespace ft
 			_alloc.construct(&next->val, value);
 			return (next);
 		}
-
 		t_node *_new_node(const t_node & src, const map<Key, T> & ref)
 		{
 			t_node *next = new t_node;
@@ -409,6 +460,94 @@ namespace ft
 			if (&src == _leaf || &src == _begin || &src == _end)
 				return (true);
 			return (false);
+		}
+
+		t_node *_case_root(t_node *child)
+		{
+			child->color = BLACK;
+			child->left = _begin;
+			child->right = _end;
+			child->parent = _leaf;
+			return (child);
+		}
+		t_node *_case_uncle_red(t_node *child)
+		{
+			t_node	*parent;
+			t_node	*grandparent;
+
+			parent = child->parent;
+			grandparent = parent->parent;
+			grandparent->left->color = BLACK;
+			grandparent->right->color = BLACK;
+			if (grandparent->parent != _leaf)
+				grandparent->color = RED;
+			return (grandparent);
+		}
+		t_node *_case_uncle_black_line(t_node *child)
+		{
+			t_node	*parent;
+			t_node	*grandparent;
+
+			parent = child->parent;
+			grandparent = parent->parent;
+
+			grandparent->color = RED;
+			parent->color = BLACK;
+			if (grandparent->right == parent)
+				grandparent = _left_rotation(parent);
+			else
+				grandparent = _right_rotation(parent);
+			return (grandparent);
+		}
+		t_node *_case_uncle_black_triangle(t_node *child)
+		{
+			t_node	*parent;
+			t_node	*grandparent;
+
+			parent = child->parent;
+			grandparent = parent->parent;
+			if (parent->left == child)
+			{
+				grandparent->right = child;
+				child->parent = grandparent;
+				parent->left = child->right;
+				child->right->parent = parent;
+				child->right = parent;
+				parent->parent = child;
+			}
+			else
+			{
+				grandparent->left = child;
+				child->parent = grandparent;
+				parent->right = child->left;
+				child->left->parent = parent;
+				child->left = parent;
+				parent->parent = child;
+			}
+			return (parent);
+		}
+
+		t_node *_left_rotation(t_node *parent)
+		{
+			t_node *tmp;
+
+			tmp = parent->left;
+			parent->left = parent->parent;
+			parent->parent->parent = parent;
+			parent->left->right = tmp;
+			tmp->parent = parent->left->right;
+			return (parent);
+		}
+		t_node *_right_rotation(t_node *parent)
+		{
+			t_node *tmp;
+
+			tmp = parent->right;
+			parent->right = parent->parent;
+			parent->parent->parent = parent;
+			parent->right->left = tmp;
+			tmp->parent = parent->right->left;
+			return (parent);
 		}
 
 	private:

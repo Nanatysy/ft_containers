@@ -11,19 +11,38 @@ int main()
 //	first.print_tree();
 
 
-//	ft::map<int, int>::iterator it = first.begin();
-//	ft::map<int, int>::iterator ite = first.end();
+	ft::map<int, int>::iterator it = first.begin();
+	ft::map<int, int>::iterator ite = first.end();
 
-//	while (it != ite)
+	while (it != ite)
+	{
+		std::cout << it->second << " ";
+		++it;
+	}
+	std::cout << std::endl;
+
+
+	std::cout << std::endl << "---------------------" << std::endl;
+
+
+	std::vector<ft::pair<int, int> > ref;
+	for (int i = 1; i < 51; i++)
+		ref.push_back(ft::make_pair(i, i));
+	ft::map<int, int> second(ref.begin(), ref.end());
+
+	std::cout << std::endl << "---------------------" << std::endl;
+
+	second.print_tree();
+	std::cout << std::endl;
+
+//	ft::map<int, int>::iterator it2 = second.begin();
+//	ft::map<int, int>::iterator ite2 = second.end();
+//	while(it2 != ite2)
 //	{
-//		std::cout << it->second << " ";
-//		++it;
+//		std::cout << it2->second << " ";
+//		it2++;
 //	}
 //	std::cout << std::endl;
-
-//	first.print_tree();
-
-	first.print_tree();
 
 //	ft::map<int, int> second;
 //	second = first;

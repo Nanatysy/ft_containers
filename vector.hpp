@@ -10,6 +10,8 @@
 # include "enable_if.hpp"
 # include "compare.hpp"
 
+//TODO: iterator - iterator: only for random access, change
+
 namespace ft {
 
 	template < class T, class Alloc = std::allocator<T> >
