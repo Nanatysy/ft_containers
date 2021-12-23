@@ -187,114 +187,13 @@ namespace ft
 			 const key_compare& comp = key_compare(),
 			 const allocator_type& alloc = allocator_type()) : _compare(comp), _alloc(alloc), _size(0)
 		{
-			//TODO: breaks iterator
-			t_node	*parent;
-			t_node	*tmp_r;
-			t_node	*tmp_l;
-			t_node	*child;
-			t_node	*uncle;
-			bool	direction;
-
 			_leaf = _new_node();
 			_begin = _new_node();
 			_end = _new_node();
 			_root = _leaf;
 			_root->parent = _leaf;
 
-			while (first != last)
-			{
-				t_node *new_elem = _new_node(*first);
-				parent = _root;
-				if (!_is_end(*parent))
-				{
-					// search for insertion place, somehow check if key already exist
-					tmp_r = parent->right;
-					tmp_l = parent->left;
-					direction = _compare(new_elem->val.first, parent->val.first);
-					if (!direction && new_elem->val.first == parent->val.first)
-						continue ; // skip if key already exist ??(or change value)
-					while ((!_is_end(*tmp_l) || direction == false) && (!_is_end(*tmp_r) || direction == true))
-					{
-						parent = direction ? tmp_l : tmp_r;
-						tmp_l = parent->left;
-						tmp_r = parent->right;
-						direction = _compare(new_elem->val.first, parent->val.first);
-					}
-					child = direction ? tmp_l : tmp_r;
-
-					// insert red node
-					if (child == _begin)
-					{
-						new_elem->left = _begin;
-						_begin->parent = new_elem;
-					}
-					else if (child == _end)
-					{
-						new_elem->right = _end;
-						_end->parent = new_elem;
-					}
-					direction ? parent->left = new_elem : parent->right = new_elem;
-					new_elem->parent = parent;
-					child = new_elem;
-
-//					print_tree();
-//					std::cout << std::endl << "------------------" << std::endl;
-
-					//check if tree isn't balanced
-					while (parent->color == RED && child->color == RED)
-					{
-						// balance
-						tmp_l = parent->parent;
-						uncle = (tmp_l->right == parent) ? tmp_l->left : tmp_l->right;
-						if (uncle->color == RED)
-							child = _case_uncle_red(child);
-						else if ((parent->parent->left == parent && parent->left == child) || (parent->parent->right == parent && parent->right == child))
-						{
-							if (tmp_l == _root)
-							{
-								child = _case_uncle_black_line(child);
-								child->parent = _leaf;
-								_root = child;
-							}
-							else
-							{
-								if (tmp_l == tmp_l->parent->left)
-								{
-									tmp_r = tmp_l->parent;
-									child = _case_uncle_black_line(child);
-									tmp_r->left = child;
-									child->parent = tmp_r;
-								}
-								else
-								{
-									tmp_r = tmp_l->parent;
-									child = _case_uncle_black_line(child);
-									tmp_r->right = child;
-									child->parent = tmp_r;
-								}
-							}
-						}
-						else
-						{
-							child = _case_uncle_black_triangle(child);
-						}
-						parent = child->parent;
-					}
-
-				}
-				else
-				{
-					// new element - root
-					_root = _case_root(new_elem);
-				}
-
-//				print_tree();
-//				std::cout << std::endl << "------------------" << std::endl;
-
-				first++;
-				_size++;
-			}
-
+			this->insert(first, last);
 		}
 		map (const map<Key, T> & x) : _size(0)
 		{
@@ -334,6 +233,7 @@ namespace ft
 			delete _end;
 		}
 
+//		iterator
 		iterator begin()
 		{
 			if (_size == 0)
@@ -347,51 +247,362 @@ namespace ft
 		}
 //		const_iterator end() const;
 
+//		capacity
+		bool empty() const
+		{
+			return (_size == 0);
+		}
+		size_type size() const
+		{
+			return (_size);
+		}
+		size_type max_size() const
+		{
+			return (_alloc.max_size());
+		}
+
+//		Element access
+		mapped_type& operator[] (const key_type& k)
+		{
+			t_node	*tmp;
+			t_node	*parent;
+
+			tmp = _root;
+			parent = _root->parent;
+			while (!_is_end(*tmp))
+			{
+				if (_compare(k, tmp->val.first))
+					tmp = tmp->left;
+				else
+				{
+					if (!_compare(tmp->val.first, k))
+						return (tmp->val.second);
+					tmp = tmp->right;
+				}
+				parent = tmp->parent;
+			}
+			// return (insert (parent, k))
+		}
+
+//		modifiers
+		pair<iterator,bool> insert (const value_type& val)
+		{
+			t_node	*parent;
+			t_node	*grandgrandparent;
+			t_node	*grandparent;
+			t_node	*child;
+			t_node	*uncle;
+			bool	direction;
+			ft::pair<t_node *, bool> pos;
+
+			t_node *new_elem = _new_node(val);
+
+			// search for insertion place, somehow check if key already exist
+			pos = _find_pos(new_elem->val);
+			parent = pos.first;
+			direction = pos.second;
+			if (parent == _leaf)
+				_root = _case_root(new_elem);
+			else if (direction == false && _compare(pos.first->val.first, new_elem->val.first) == false)
+			{
+				_delete_tree(new_elem);
+				return (pos); // already exist
+			}
+			child = (direction) ? parent->left : parent->right;
+			pos.first = child;
+			pos.second = true;
+
+			// insert red node
+			if (child == _begin)
+			{
+				new_elem->left = _begin;
+				_begin->parent = new_elem;
+			}
+			else if (child == _end)
+			{
+				new_elem->right = _end;
+				_end->parent = new_elem;
+			}
+			direction ? parent->left = new_elem : parent->right = new_elem;
+			new_elem->parent = parent;
+			child = new_elem;
+
+			//check if tree isn't balanced
+			while (parent->color == RED && child->color == RED)
+			{
+				// balance
+				grandparent = parent->parent;
+				uncle = (grandparent->right == parent) ? grandparent->left : grandparent->right;
+				if (uncle->color == RED)
+					child = _case_uncle_red(child);
+				else if ((parent->parent->left == parent && parent->left == child) || (parent->parent->right == parent && parent->right == child))
+				{
+					if (grandparent == _root)
+					{
+						child = _case_uncle_black_line(child);
+						child->parent = _leaf;
+						_root = child;
+					}
+					else
+					{
+						if (grandparent == grandparent->parent->left)
+						{
+							grandgrandparent = grandparent->parent;
+							child = _case_uncle_black_line(child);
+							grandgrandparent->left = child;
+							child->parent = grandgrandparent;
+						}
+						else
+						{
+							grandgrandparent = grandparent->parent;
+							child = _case_uncle_black_line(child);
+							grandgrandparent->right = child;
+							child->parent = grandgrandparent;
+						}
+					}
+				}
+				else
+				{
+					child = _case_uncle_black_triangle(child);
+				}
+				parent = child->parent;
+			}
+			_size++;
+			return (pos);
+		}
+		iterator insert (iterator position, const value_type& val)
+		{
+			t_node *child;
+			bool direction;
+
+			direction = _compare(val.first, position->val.first);
+			child = (direction) ? position->left : position->right;
+			if (!_is_end(*child))
+				return (this->insert(val).first);
+			//use hint?
+		}
+		template <class InputIterator>
+		void insert (InputIterator first, typename ft::enable_if<ft::is_iterator <InputIterator>::value, InputIterator>::type last)
+		{
+			t_node	*parent;
+			t_node	*grandgrandparent;
+			t_node	*grandparent;
+			t_node	*child;
+			t_node	*uncle;
+			bool	direction;
+			ft::pair<t_node *, bool> pos;
+
+			while (first != last)
+			{
+				t_node *new_elem = _new_node(*first);
+
+				// search for insertion place, somehow check if key already exist
+				pos = _find_pos(new_elem->val);
+				parent = pos.first;
+				direction = pos.second;
+				if (parent == _leaf)
+					_root = _case_root(new_elem);
+				else if (direction == false && _compare(pos.first->val.first, new_elem->val.first) == false)
+				{
+					_delete_tree(new_elem);
+					continue ; // already exist
+				}
+				child = (direction) ? parent->left : parent->right;
+
+				// insert red node
+				if (child == _begin)
+				{
+					new_elem->left = _begin;
+					_begin->parent = new_elem;
+				}
+				else if (child == _end)
+				{
+					new_elem->right = _end;
+					_end->parent = new_elem;
+				}
+				direction ? parent->left = new_elem : parent->right = new_elem;
+				new_elem->parent = parent;
+				child = new_elem;
+//
+//						print_tree();
+//						std::cout << std::endl << "------------------" << std::endl;
+
+				//check if tree isn't balanced
+				while (parent->color == RED && child->color == RED)
+				{
+					// balance
+					grandparent = parent->parent;
+					uncle = (grandparent->right == parent) ? grandparent->left : grandparent->right;
+					if (uncle->color == RED)
+						child = _case_uncle_red(child);
+					else if ((parent->parent->left == parent && parent->left == child) || (parent->parent->right == parent && parent->right == child))
+					{
+						if (grandparent == _root)
+						{
+							child = _case_uncle_black_line(child);
+							child->parent = _leaf;
+							_root = child;
+						}
+						else
+						{
+							if (grandparent == grandparent->parent->left)
+							{
+								grandgrandparent = grandparent->parent;
+								child = _case_uncle_black_line(child);
+								grandgrandparent->left = child;
+								child->parent = grandgrandparent;
+							}
+							else
+							{
+								grandgrandparent = grandparent->parent;
+								child = _case_uncle_black_line(child);
+								grandgrandparent->right = child;
+								child->parent = grandgrandparent;
+							}
+						}
+					}
+					else
+					{
+						child = _case_uncle_black_triangle(child);
+					}
+					parent = child->parent;
+				}
+
+//				print_tree();
+//				std::cout << std::endl << "------------------" << std::endl;
+
+				first++;
+				_size++;
+			}
+		}
+		void erase (iterator position);
+		size_type erase (const key_type& k);
+		void erase (iterator first, iterator last);
+		void swap (map& x);
+		void clear();
+
+//		observers
+		key_compare key_comp() const;
+//		value_compare value_comp() const;
+
+//		operations
+		iterator find (const key_type& k)
+		{
+			t_node	*tmp;
+
+			tmp = _root;
+			while (!_is_end(*tmp))
+			{
+				if (_compare(k, tmp->val.first))
+					tmp = tmp->left;
+				else
+				{
+					if (!_compare(tmp->val.first, k))
+						return (iterator(tmp));
+					tmp = tmp->right;
+				}
+			}
+			return (this->end());
+		}
+		const_iterator find (const key_type& k) const
+		{
+			t_node	*tmp;
+
+			tmp = _root;
+			while (!_is_end(*tmp))
+			{
+				if (_compare(k, tmp->val.first))
+					tmp = tmp->left;
+				else
+				{
+					if (!_compare(tmp->val.first, k))
+						return (const_iterator(tmp));
+					tmp = tmp->right;
+				}
+			}
+			return (this->end());
+		}
+		size_type count (const key_type& k) const
+		{
+			t_node	*tmp;
+
+			tmp = _root;
+			while (!_is_end(*tmp))
+			{
+				if (_compare(k, tmp->val.first))
+					tmp = tmp->left;
+				else
+				{
+					if (!_compare(tmp->val.first, k))
+						return (1);
+					tmp = tmp->right;
+				}
+			}
+			return (0);
+		}
+		iterator lower_bound (const key_type& k)
+		{
+			iterator it = this->begin();
+			iterator ite = this->end();
+
+			while (it != ite)
+			{
+				if (!_compare(it->first, k))
+					break;
+				++it;
+			}
+			return (it);
+		}
+		const_iterator lower_bound (const key_type& k) const
+		{
+			const_iterator it = this->begin();
+			const_iterator ite = this->end();
+
+			while (it != ite)
+			{
+				if (!_compare(it->first, k))
+					break;
+				++it;
+			}
+			return (it);
+		}
+		iterator upper_bound (const key_type& k)
+		{
+			iterator it = this->begin();
+			iterator ite = this->end();
+
+			while (it != ite)
+			{
+				if (_compare(k, it->first))
+					break;
+				++it;
+			}
+			return (it);
+		}
+		const_iterator upper_bound (const key_type& k) const
+		{
+			const_iterator it = this->begin();
+			const_iterator ite = this->end();
+
+			while (it != ite)
+			{
+				if (_compare(k, it->first))
+					break;
+				++it;
+			}
+			return (it);
+		}
+		pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
+		pair<iterator,iterator>             equal_range (const key_type& k);
+
+//		allocator
+		allocator_type get_allocator() const;
+
+
 		void	print_tree() const
 		{
-			print2D(_root);
+			print2DUtil(_root, 0);
 		}
-#define COUNT 5
-
-		void print2DUtil(t_node *root, int space) const
-		{
-			// Base case
-			if (root == _leaf || root == _begin || root == _end)
-			{
-				for (int i = 0; i < space; i++)
-					std::cout<<" ";
-				std::cout<<"\x1b[34m" << "*" << "\x1b[0m";
-				return;
-			}
-
-			// Increase distance between levels
-			space += COUNT;
-
-			// Process right child first
-			print2DUtil(root->right, space);
-
-			// Print current node after space
-			// count
-			std::cout << std::endl;
-			for (int i = COUNT; i < space; i++)
-				std::cout<<" ";
-			if (root->color == RED)
-				std::cout << "\x1b[31m";
-			else
-				std::cout << "\x1b[34m";
-			std::cout<<root->val.second<<"\n";
-			std::cout << "\x1b[0m";
-
-			// Process left child
-			print2DUtil(root->left, space);
-		}
-
-		void print2D(t_node *root) const
-		{
-			// Pass initial space count as 0
-			print2DUtil(root, 0);
-		}
-
 
 	private:
 		t_node *_new_node()
@@ -436,9 +647,15 @@ namespace ft
 			else
 			{
 				if (&src == ref._begin)
+				{
 					*next = _begin;
+					_begin->parent = *next;
+				}
 				else if (&src == ref._end)
+				{
 					*next = _end;
+					_end->parent = *next;
+				}
 				else
 					*next = _leaf;
 			}
@@ -466,7 +683,9 @@ namespace ft
 		{
 			child->color = BLACK;
 			child->left = _begin;
+			_begin->parent = child;
 			child->right = _end;
+			_end->parent = child;
 			child->parent = _leaf;
 			return (child);
 		}
@@ -535,7 +754,7 @@ namespace ft
 			parent->left = parent->parent;
 			parent->parent->parent = parent;
 			parent->left->right = tmp;
-			tmp->parent = parent->left->right;
+			tmp->parent = parent->left;
 			return (parent);
 		}
 		t_node *_right_rotation(t_node *parent)
@@ -546,9 +765,77 @@ namespace ft
 			parent->right = parent->parent;
 			parent->parent->parent = parent;
 			parent->right->left = tmp;
-			tmp->parent = parent->right->left;
+			tmp->parent = parent->right;
 			return (parent);
 		}
+
+		ft::pair<t_node *, bool> _find_pos(value_type &val)
+		{
+			t_node	*parent;
+			t_node	*tmp_r;
+			t_node	*tmp_l;
+			bool direction;
+
+			parent = _root;
+			if (_is_end(*parent))
+				return (ft::make_pair(parent, false));
+
+			tmp_r = parent->right;
+			tmp_l = parent->left;
+			direction = _compare(val.first, parent->val.first);
+			if (direction == _compare(parent->val.first, val.first)) // TODO: _compare(a, b) == _compare(b, a)
+				return (ft::make_pair(parent, false));
+			while ((!_is_end(*tmp_l) || direction == false) && (!_is_end(*tmp_r) || direction == true))
+			{
+				parent = direction ? tmp_l : tmp_r;
+				tmp_l = parent->left;
+				tmp_r = parent->right;
+				direction = _compare(val.first, parent->val.first);
+				if (direction == _compare(parent->val.first, val.first))
+					return (ft::make_pair(parent, false));
+			}
+			return (ft::make_pair(parent, direction));
+		}
+
+		#define COUNT 5
+		void print2DUtil(t_node *root, int space) const
+		{
+			// Base case
+			if (root == _leaf || root == _begin || root == _end)
+			{
+				for (int i = 0; i < space; i++)
+					std::cout<<" ";
+				if (root == _begin)
+					std::cout<<"\x1b[33m" << "*" << "\x1b[0m";
+				else if (root == _end)
+					std::cout<<"\x1b[35m" << "*" << "\x1b[0m";
+				else
+					std::cout<<"\x1b[34m" << "*" << "\x1b[0m";
+				return;
+			}
+
+			// Increase distance between levels
+			space += COUNT;
+
+			// Process right child first
+			print2DUtil(root->right, space);
+
+			// Print current node after space
+			// count
+			std::cout << std::endl;
+			for (int i = COUNT; i < space; i++)
+				std::cout<<" ";
+			if (root->color == RED)
+				std::cout << "\x1b[31m";
+			else
+				std::cout << "\x1b[34m";
+			std::cout<<root->val.second<<"\n";
+			std::cout << "\x1b[0m";
+
+			// Process left child
+			print2DUtil(root->left, space);
+		}
+
 
 	private:
 		allocator_type	_alloc;
