@@ -26,7 +26,7 @@ int main()
 
 
 	std::vector<ft::pair<int, int> > ref;
-	for (int i = 1; i < 21; i++)
+	for (int i = 1; i < 11; i++)
 	{
 		ref.push_back(ft::make_pair(i, i));
 		ref.push_back(ft::make_pair(50 + i, 50 + i));
@@ -46,6 +46,23 @@ int main()
 		it2++;
 	}
 	std::cout << std::endl;
+
+	std::cout << std::endl << "----------&----------" << std::endl;
+
+//	ft::map<int, int>::iterator td = second.find(10);
+	second.erase(8);
+
+	second.print_tree();
+	std::cout << std::endl;
+
+//	it2 = second.begin();
+//	while(it2 != second.end())
+//	{
+//		std::cout << it2->second << " ";
+//		it2++;
+//	}
+//	std::cout << std::endl;
+
 
 //	ft::map<int, int> second;
 //	second = first;
