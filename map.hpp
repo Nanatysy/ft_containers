@@ -13,6 +13,8 @@
 #include "iterator.hpp"
 #include <queue>
 
+// TODO: insert(when tree is empty) - doesn't work, key_compare, erase, reverse_iterator
+
 namespace ft
 {
 
@@ -144,7 +146,7 @@ namespace ft
 		typedef Alloc allocator_type;
 		typedef typename allocator_type::value_type value_type;
 		typedef Compare key_compare;
-//		typedef value_compare;
+		typedef typename value_type:: value_compare;
 
 		typedef typename allocator_type::reference reference;
 		typedef typename allocator_type::const_reference const_reference;
@@ -590,7 +592,7 @@ namespace ft
 //					if (!first)
 //					{
 //						(direction) ? parent->left = to_be_removed->left : parent->right = to_be_removed->left;
-							to_be_removed->left->parent = (!first) ? *parent : _leaf;
+							to_be_removed->left->parent = (!first) ? (*parent)->parent : _leaf;
 							*parent = to_be_removed->left;
 							if (to_be_removed->right == _end)
 								to_be_removed->left->right = _end;
@@ -602,7 +604,7 @@ namespace ft
 						}
 						else
 						{
-							to_be_removed->right->parent = (!first) ? *parent : _leaf;
+							to_be_removed->right->parent = (!first) ? (*parent)->parent : _leaf;
 							*parent = to_be_removed->right;
 							if (to_be_removed->left == _begin)
 								to_be_removed->right->left = _begin;
@@ -613,13 +615,28 @@ namespace ft
 						new_child = to_be_removed->right;
 						while (new_child->left != _leaf)
 							new_child = new_child->left;
-//				(direction) ? parent->left = new_child : parent->right = new_child;
-						*parent = new_child;
-						new_child->parent->left = new_child->right;
+
+						std::cout << "---> parent: " << (*parent)->val.first << std::endl;
+						std::cout << "---> new child: " << new_child->val.first << std::endl;
+						std::cout << "---> to be removed: " << to_be_removed->val.first << std::endl;
+						std::cout << "to be removed left: " << to_be_removed->left->val.first << std::endl;
+
+						(direction) ? (*parent)->left = new_child : (*parent)->right = new_child;
+						(direction) ? std::cout << "left" << std::endl : std::cout << "right" << std::endl;
+//						*parent = new_child;
+						new_child->parent->left = new_child->right; // -
 //				new_child->parent = parent;
 						new_child->parent = (!first) ? *parent : _leaf;
-						new_child->left = to_be_removed->left;
-						new_child->right = to_be_removed->right;
+						std::cout << "---> parent: " << (*parent)->val.first << std::endl;
+						std::cout << "---> to be removed: " << to_be_removed->val.first << std::endl;
+						std::cout << "to be removed left: " << to_be_removed->left->val.first << std::endl;
+						new_child->left = to_be_removed->left; // ?
+						to_be_removed->right->parent = new_child;
+						if (new_child != to_be_removed->right)
+						{
+							new_child->right = to_be_removed->right;
+							to_be_removed->right->parent = new_child;
+						}
 					}
 					_alloc.destroy(&to_be_removed->val);
 					delete to_be_removed;
@@ -629,8 +646,22 @@ namespace ft
 
 		}
 		void erase (iterator first, iterator last);
-		void swap (map& x);
-		void clear();
+		void swap (map& x)
+		{
+			std::swap(this->_leaf, x._leaf);
+			std::swap(this->_root, x._root);
+			std::swap(this->_end, x._end);
+			std::swap(this->_begin, x._begin);
+			std::swap(this->_compare, x._compare);
+			std::swap(this->_alloc, x._alloc);
+			std::swap(this->_size, x._size);
+		} // test
+		void clear() // test
+		{
+			_delete_tree(*_root);
+			_root = _leaf;
+			_size = 0;
+		}
 
 //		observers
 		key_compare key_comp() const;
@@ -716,7 +747,7 @@ namespace ft
 				++it;
 			}
 			return (it);
-		}
+		} // doesn't work
 		iterator upper_bound (const key_type& k)
 		{
 			iterator it = this->begin();
@@ -742,12 +773,21 @@ namespace ft
 				++it;
 			}
 			return (it);
+		} // doesn't work
+		pair<const_iterator,const_iterator> equal_range (const key_type& k) const // doesn't work
+		{
+			return (ft::make_pair(this->lower_bound(k), this->upper_bound(k)));
 		}
-		pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
-		pair<iterator,iterator>             equal_range (const key_type& k);
+		pair<iterator,iterator> equal_range (const key_type& k)
+		{
+			return (ft::make_pair(this->lower_bound(k), this->upper_bound(k)));
+		}
 
 //		allocator
-		allocator_type get_allocator() const;
+		allocator_type get_allocator() const
+		{
+			return (_alloc);
+		}
 
 
 		void	print_tree() const

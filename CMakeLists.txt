@@ -45,5 +45,8 @@ add_executable(vector_test
         iterator.hpp
         )
 
-#add_executable(acid
-#        acid.cpp)
+add_executable(range.cpp
+        map.hpp
+        pair.hpp
+        range.cpp
+        )

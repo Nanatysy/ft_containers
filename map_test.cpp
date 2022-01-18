@@ -50,7 +50,7 @@ int main()
 	std::cout << std::endl << "----------&----------" << std::endl;
 
 //	ft::map<int, int>::iterator td = second.find(10);
-	second.erase(8);
+	second.erase(80);
 
 	second.print_tree();
 	std::cout << std::endl;

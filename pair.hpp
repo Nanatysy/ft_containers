@@ -25,7 +25,7 @@ namespace ft {
 
 		pair& operator=( const pair & other )
 		{
-			if (*this == other)
+			if (this == &other)
 				return (*this);
 
 			this->first = other.first;
