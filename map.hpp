@@ -7,13 +7,15 @@
 
 #define RED 1
 #define BLACK 2
+#define LEFT true
+#define RIGHT false
 
 #include "pair.hpp"
 #include "enable_if.hpp"
 #include "iterator.hpp"
 #include <queue>
 
-// TODO: insert(when tree is empty) - doesn't work, key_compare, erase, reverse_iterator
+// TODO: insert(when tree is empty) - doesn't work, erase, reverse_iterator, value_comp, cbegin, cend, lower_bound, upper_bound (with const iterator)
 
 namespace ft
 {
@@ -138,6 +140,12 @@ namespace ft
 		private:
 			iterator_type		_ptr;
 			const map<Key, T>	*_tree;
+		};
+
+	private:
+		class value_compare
+		{
+			
 		};
 
 	public:
@@ -480,166 +488,79 @@ namespace ft
 		void erase (iterator position)
 		{
 			t_node	*to_be_removed;
-//			t_node	*parent;
 			t_node	*new_child;
 			t_node	**parent;
 			bool	direction;
 			bool	first;
 
-			to_be_removed = position;
-//			parent = to_be_removed->parent;
-			first = (to_be_removed == _root);
 
-			if (!first)
-			{
-				direction = (parent->left == to_be_removed);
-				parent = (direction) ? &parent->left : &parent->right;
-			}
-			else
-				parent = &_root;
-
-			if (_is_end(*to_be_removed->left) && _is_end(to_be_removed->right)) // no children
-			{
-				if (!first)
-				{
-					**parent = (direction) ? to_be_removed->left : to_be_removed->right;
-					(direction) ? to_be_removed->left->parent = parent : to_be_removed->right->parent = parent;
-				}
-				else
-					_root = _leaf;
-			}
-			else if (_is_end(*to_be_removed->left) || _is_end(to_be_removed->right)) // 1 child
-			{
-				if (!_is_end(*to_be_removed->left))
-				{
-//					if (!first)
-//					{
-//						(direction) ? parent->left = to_be_removed->left : parent->right = to_be_removed->left;
-						**parent = to_be_removed->left;
-						to_be_removed->left->parent = (!first) ? *parent : _leaf;
-						if (to_be_removed->right == _end)
-							to_be_removed->left->right = _end;
-//					}
-//					else
-//					{
-//						_root = to_be_removed->left;
-//					}
-				}
-				else
-				{
-					**parent = to_be_removed->right;
-					to_be_removed->right->parent = (!first) ? *parent : _leaf;
-					if (to_be_removed->left == _begin)
-						to_be_removed->right->left = _begin;
-				}
-			}
-			else // 2 children
-			{
-				new_child = to_be_removed->right;
-				while (new_child->left != _leaf)
-					new_child = new_child->left;
-//				(direction) ? parent->left = new_child : parent->right = new_child;
-				**parent = new_child;
-				new_child->parent->left = new_child->right;
-//				new_child->parent = parent;
-				new_child->parent = (!first) ? *parent : _leaf;
-				new_child->left = to_be_removed->left;
-				new_child->right = to_be_removed->right;
-			}
-			_alloc.destroy(&to_be_removed->val);
-			delete to_be_removed;
 		}
 		size_type erase (const key_type& k)
 		{
 			t_node	*to_be_removed;
 			t_node	*new_child;
-			t_node	**parent;
+			t_node	*parent;
+			t_node	*brother;
 			bool	direction;
 			bool	first;
 			ft::pair<t_node *, bool> pos;
 
+			if (_is_end(_root)) // tree is empty
+				return (0);
+
 			pos = _find_pos(k);
-			if (!pos.second)
+			if (pos.second == true || (pos.second == false && pos.first->left->val.first == k)) // key doesn't exist
+				return (0);
+
+			// TODO: check if _root = to_be_removed
+			to_be_removed = pos.first;
+			if (!_is_end(to_be_removed->left) && !_is_end(to_be_removed->right)) // two children
 			{
-				if (_compare(pos.first->val.first, k) == _compare(k, pos.first->val.first))
+				// find smallest in right subtree
+				new_child = to_be_removed->right;
+				while (!_is_end(new_child->left))
+					new_child = new_child->left;
+
+				// copy smallest
+				to_be_removed->val = new_child->val;
+				to_be_removed = new_child;
+			}
+
+			// now to_be_remove has no more than 1 child
+			new_child = to_be_removed->right; // потомок
+			parent = to_be_removed->parent;
+			direction = (parent->left == to_be_removed) ? LEFT : RIGHT;
+
+			if (to_be_removed->left == _begin)
+				new_child = to_be_removed->left;
+			else if (to_be_removed->right == _end)
+				new_child = to_be_removed->right;
+			else if (!_is_end(to_be_removed->left))
+				new_child = to_be_removed->left;
+
+			if (to_be_removed->color == RED)
+				_e_case_parent_red_child_black(parent, to_be_removed, new_child, direction);
+			else
+			{
+				if (new_child->color == RED)
 				{
-					to_be_removed = pos.first;
-					parent = &to_be_removed->parent;
-					first = (to_be_removed == _root);
-
-					if (!first)
-					{
-						direction = ((*parent)->left == to_be_removed);
-						parent = (direction) ? &((*parent)->left) : &((*parent)->right);
-					}
+					new_child->color = BLACK;
+					_e_case_parent_red_child_black(parent, to_be_removed, new_child, direction);
+				}
+				else
+				{
+					if (parent->left == to_be_removed)
+						brother = parent->right;
 					else
-						parent = &_root;
+						brother = parent->left;
 
-					if (_is_end(*to_be_removed->left) && _is_end(*to_be_removed->right)) // no children
-					{
-						if (!first)
-						{
-							*parent = (direction) ? to_be_removed->left : to_be_removed->right;
-							(direction) ? to_be_removed->left->parent = *parent : to_be_removed->right->parent = *parent;
-						}
-						else
-							_root = _leaf;
-					}
-					else if (_is_end(*to_be_removed->left) || _is_end(*to_be_removed->right)) // 1 child
-					{
-						if (!_is_end(*to_be_removed->left))
-						{
-//					if (!first)
-//					{
-//						(direction) ? parent->left = to_be_removed->left : parent->right = to_be_removed->left;
-							to_be_removed->left->parent = (!first) ? (*parent)->parent : _leaf;
-							*parent = to_be_removed->left;
-							if (to_be_removed->right == _end)
-								to_be_removed->left->right = _end;
-//					}
-//					else
-//					{
-//						_root = to_be_removed->left;
-//					}
-						}
-						else
-						{
-							to_be_removed->right->parent = (!first) ? (*parent)->parent : _leaf;
-							*parent = to_be_removed->right;
-							if (to_be_removed->left == _begin)
-								to_be_removed->right->left = _begin;
-						}
-					}
-					else // 2 children
-					{
-						new_child = to_be_removed->right;
-						while (new_child->left != _leaf)
-							new_child = new_child->left;
+					if (direction == RIGHT)
+						parent->right = new_child;
+					else
+						parent->left = new_child;
+					new_child->parent = parent;
 
-						std::cout << "---> parent: " << (*parent)->val.first << std::endl;
-						std::cout << "---> new child: " << new_child->val.first << std::endl;
-						std::cout << "---> to be removed: " << to_be_removed->val.first << std::endl;
-						std::cout << "to be removed left: " << to_be_removed->left->val.first << std::endl;
 
-						(direction) ? (*parent)->left = new_child : (*parent)->right = new_child;
-						(direction) ? std::cout << "left" << std::endl : std::cout << "right" << std::endl;
-//						*parent = new_child;
-						new_child->parent->left = new_child->right; // -
-//				new_child->parent = parent;
-						new_child->parent = (!first) ? *parent : _leaf;
-						std::cout << "---> parent: " << (*parent)->val.first << std::endl;
-						std::cout << "---> to be removed: " << to_be_removed->val.first << std::endl;
-						std::cout << "to be removed left: " << to_be_removed->left->val.first << std::endl;
-						new_child->left = to_be_removed->left; // ?
-						to_be_removed->right->parent = new_child;
-						if (new_child != to_be_removed->right)
-						{
-							new_child->right = to_be_removed->right;
-							to_be_removed->right->parent = new_child;
-						}
-					}
-					_alloc.destroy(&to_be_removed->val);
-					delete to_be_removed;
 				}
 			}
 
@@ -664,7 +585,10 @@ namespace ft
 		}
 
 //		observers
-		key_compare key_comp() const;
+		key_compare key_comp() const
+		{
+			return (_compare);
+		}
 //		value_compare value_comp() const;
 
 //		operations
@@ -863,6 +787,7 @@ namespace ft
 			}
 		}
 
+		// returns true if src - leaf
 		bool	_is_end(const t_node & src) const
 		{
 			if (&src == _leaf || &src == _begin || &src == _end)
@@ -937,6 +862,17 @@ namespace ft
 			return (parent);
 		}
 
+		void	_e_case_parent_red_child_black(t_node *parent, t_node *to_be_removed, t_node *new_child, bool direction)
+		{
+			if (direction == RIGHT)
+				parent->right = new_child;
+			else
+				parent->left = new_child;
+			new_child->parent = parent;
+			_alloc.destroy(&to_be_removed->val);
+			delete to_be_removed;
+		}
+
 		t_node *_left_rotation(t_node *parent)
 		{
 			t_node *tmp;
@@ -960,6 +896,9 @@ namespace ft
 			return (parent);
 		}
 
+		// return value: if tree is empty - second=false and first=_root
+		// 				 if node already exist - second=false and first=node
+		// 				 if position was found - second=direction and first=parent
 		ft::pair<t_node *, bool> _find_pos(const key_type &val)
 		{
 			t_node	*parent;

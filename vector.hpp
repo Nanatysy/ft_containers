@@ -10,7 +10,7 @@
 # include "enable_if.hpp"
 # include "compare.hpp"
 
-//TODO: iterator - iterator: only for random access, change
+//TODO: unit tests
 
 namespace ft {
 
@@ -66,7 +66,7 @@ namespace ft {
 			try
 			{
 				size_t count;
-				count = std::abs(last - first);
+				count = _count_range(first, last);
 				_size = count;
 				_mem_size = count * 2;
 				_vector_base = _alloc.allocate(_mem_size);
@@ -270,7 +270,7 @@ namespace ft {
 			size_type	count;
 			value_type tmp;
 
-			count = std::abs(last - first);
+			count = _count_range(first, last);
 			if (count > this->max_size())
 				throw std::length_error("length_error");
 
@@ -463,7 +463,7 @@ namespace ft {
 			iterator	current;
 			iterator	current_end;
 			size_type	i;
-			size_type	count = std::abs(last - first);
+			size_type	count = _count_range(first, last);
 
 			if (_size + count > this->max_size())
 				throw std::length_error("length_error");
@@ -518,7 +518,7 @@ namespace ft {
 			size_type i;
 			iterator ite = this->end();
 
-			i = std::abs(position - this->begin());
+			i = _count_range(this->begin(), position);
 			if (position != ite)
 				++position;
 			for ( ; position != ite; ++position)
@@ -537,8 +537,8 @@ namespace ft {
 			size_type i;
 			iterator ite = this->end();
 
-			count = std::abs(last - first);
-			i = std::abs(first - this->begin());
+			count = _count_range(first, last);
+			i = _count_range(this->begin(), first);
 			for ( ; last != ite; ++last)
 			{
 				_alloc.destroy(&_vector_base[i]);
@@ -601,6 +601,17 @@ namespace ft {
 		{
 			for (int i = 0; i < count; i++)
 				_alloc.construct(&_vector_base[start + i], src[i]);
+		}
+
+		template<typename InputIterator>
+		size_type _count_range(InputIterator first, InputIterator last)
+		{
+			size_type count;
+
+			count = 0;
+			for ( ; first != last; ++first)
+				count++;
+			return (count);
 		}
 	};
 
