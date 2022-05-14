@@ -154,7 +154,7 @@ namespace ft
 		typedef Alloc allocator_type;
 		typedef typename allocator_type::value_type value_type;
 		typedef Compare key_compare;
-		typedef typename value_type:: value_compare;
+//		typedef typename value_type:: value_compare;
 
 		typedef typename allocator_type::reference reference;
 		typedef typename allocator_type::const_reference const_reference;
@@ -382,14 +382,18 @@ namespace ft
 		}
 		iterator insert (iterator position, const value_type& val)
 		{
-			t_node *child;
-			bool direction;
+//			t_node *child;
+//			bool direction;
+//
+//			direction = _compare(val.first, position->val.first);
+//			child = (direction) ? position->left : position->right;
+//			if (!_is_end(*child))
+//				return (this->insert(val).first);
+//			//use hint?
 
-			direction = _compare(val.first, position->val.first);
-			child = (direction) ? position->left : position->right;
-			if (!_is_end(*child))
-				return (this->insert(val).first);
-			//use hint?
+			// забить на подсказку
+			(void)position;
+			return (this->insert(val).first);
 		}
 		template <class InputIterator>
 		void insert (InputIterator first, typename ft::enable_if<ft::is_iterator <InputIterator>::value, InputIterator>::type last)
@@ -566,7 +570,10 @@ namespace ft
 
 
 		}
-		void erase (iterator first, iterator last);
+		void erase (iterator first, iterator last)
+		{
+
+		}
 		void swap (map& x)
 		{
 			std::swap(this->_leaf, x._leaf);

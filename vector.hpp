@@ -10,7 +10,7 @@
 # include "enable_if.hpp"
 # include "compare.hpp"
 
-//TODO: unit tests
+//TODO: unit tests, const reverse iterator
 
 namespace ft {
 
