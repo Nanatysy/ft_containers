@@ -977,6 +977,8 @@ namespace ft
 		t_node			*_end;
 	};
 
+	// todo non-member functions
+
 
 }
 

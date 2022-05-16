@@ -27,17 +27,41 @@ namespace ft {
 
 		// constructor
 		explicit set (const key_compare& comp = key_compare(),
-					  const allocator_type& alloc = allocator_type());
+					  const allocator_type& alloc = allocator_type()) : _alloc(alloc), _compare(comp), _size(0)
+		{
+			// todo init tree
+		}
 		template <class InputIterator>
-		set (InputIterator first, InputIterator last,
+		set (InputIterator first, typename ft::enable_if<ft::is_iterator <InputIterator>::value, InputIterator>::type last,
 			 const key_compare& comp = key_compare(),
-			 const allocator_type& alloc = allocator_type());
-		set (const set& x);
+			 const allocator_type& alloc = allocator_type()) : _alloc(alloc), _compare(comp), _size(0)
+		{
+			// todo init tree
+			this->insert(first, last);
+		}
+		set (const set& x) : _size(0)
+		{
+			// todo tree init
+			*this = x;
+		}
 
 		// destructor
-		~set();
+		~set()
+		{
+			// todo delete tree
+		}
 
-		set& operator= (const set& x);
+		set& operator= (const set& x)
+		{
+			if (this == &x)
+				return (*this);
+			// delete old tree
+			this->_size = x._size;
+			this->_compare = x._compare;
+			this->_alloc = x._alloc;
+			// copy tree
+			return (*this);
+		}
 
 		// iterators
 /*		iterator begin();
@@ -50,9 +74,18 @@ namespace ft {
 		const_reverse_iterator rend() const;*/
 
 		// capacity
-		bool empty() const;
-		size_type size() const;
-		size_type max_size() const;
+		bool empty() const
+		{
+			return (_size == 0);
+		}
+		size_type size() const
+		{
+			return (_size);
+		}
+		size_type max_size() const
+		{
+			return (_alloc.max_size());
+		}
 
 		// modifiers
 /*		pair<iterator,bool> insert (const value_type& val);
@@ -66,8 +99,14 @@ namespace ft {
 		void clear();
 
 		// observers
-		key_compare key_comp() const;
-		value_compare value_comp() const;
+		key_compare key_comp() const
+		{
+			return (_compare);
+		}
+		value_compare value_comp() const
+		{
+			return (_compare);
+		}
 
 		// operations
 //		iterator find (const value_type& val) const;
@@ -77,7 +116,10 @@ namespace ft {
 //		pair<iterator,iterator> equal_range (const value_type& val) const;
 
 		// allocator
-		allocator_type get_allocator() const;
+		allocator_type get_allocator() const
+		{
+			return (_alloc);
+		}
 
 	private:
 		allocator_type	_alloc;
@@ -85,6 +127,8 @@ namespace ft {
 		size_type		_size;
 		// todo: tree node
 	};
+
+	// todo non-member functions
 
 } // ft
 
