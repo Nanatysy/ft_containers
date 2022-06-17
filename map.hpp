@@ -618,9 +618,14 @@ namespace ft
 						}
 
 						// wiki case 5: sibling is black, left child is red, right child is black and new_child direction is left
+						if (brother->color == BLACK && brother->left->color == RED && brother->right->color == BLACK && direction == LEFT) {
 
+						}
 
 						// wiki case 6: sibling is black, right child is red and new_child direction is left
+						if (brother->color == BLACK && brother->right->color == RED && direction == LEFT) {
+
+						}
 					}
 				}
 			}
