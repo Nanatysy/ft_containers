@@ -308,7 +308,7 @@ namespace ft
 			t_node *new_elem = _new_node(val);
 
 			// search for insertion place, somehow check if key already exist
-			pos = _find_pos(new_elem->val.first);
+			pos = _find_position_for_new_node(new_elem->val.first);
 			parent = pos.first;
 			direction = pos.second;
 			if (parent == _leaf)
@@ -411,7 +411,7 @@ namespace ft
 				t_node *new_elem = _new_node(*first);
 
 				// search for insertion place, somehow check if key already exist
-				pos = _find_pos(new_elem->val.first);
+				pos = _find_position_for_new_node(new_elem->val.first);
 				parent = pos.first;
 				direction = pos.second;
 				if (parent == _leaf)
@@ -509,65 +509,123 @@ namespace ft
 			bool	first;
 			ft::pair<t_node *, bool> pos;
 
-			if (_is_end(_root)) // tree is empty
+			if (_is_end(*_root)) // tree is empty
 				return (0);
 
-			pos = _find_pos(k);
-			if (pos.second == true || (pos.second == false && pos.first->left->val.first == k)) // key doesn't exist
+			pos = _find_position_for_new_node(k);
+			if (pos.second == true || (pos.second == false && pos.first->val.first != k)) // key doesn't exist
 				return (0);
 
 			// TODO: check if _root = to_be_removed
 			to_be_removed = pos.first;
-			if (!_is_end(to_be_removed->left) && !_is_end(to_be_removed->right)) // two children
+			if (!_is_end(*to_be_removed->left) && !_is_end(*to_be_removed->right)) // two children
 			{
 				// find smallest in right subtree
 				new_child = to_be_removed->right;
-				while (!_is_end(new_child->left))
+				while (!_is_end(*new_child->left))
 					new_child = new_child->left;
 
 				// copy smallest
-				to_be_removed->val = new_child->val;
+				_alloc.destroy(&to_be_removed->val);
+				_alloc.construct(&to_be_removed->val, new_child->val);
 				to_be_removed = new_child;
 			}
 
 			// now to_be_remove has no more than 1 child
-			new_child = to_be_removed->right; // потомок
 			parent = to_be_removed->parent;
 			direction = (parent->left == to_be_removed) ? LEFT : RIGHT;
-
-			if (to_be_removed->left == _begin)
+			// choosing inheritor
+			if (!_is_end(*to_be_removed->left)) {
 				new_child = to_be_removed->left;
-			else if (to_be_removed->right == _end)
-				new_child = to_be_removed->right;
-			else if (!_is_end(to_be_removed->left))
-				new_child = to_be_removed->left;
-
-			if (to_be_removed->color == RED)
-				_e_case_parent_red_child_black(parent, to_be_removed, new_child, direction);
-			else
-			{
-				if (new_child->color == RED)
-				{
-					new_child->color = BLACK;
-					_e_case_parent_red_child_black(parent, to_be_removed, new_child, direction);
+				if (to_be_removed->right == _end) {
+					new_child->right = _end;
+					_end->parent = new_child;
 				}
-				else
-				{
-					if (parent->left == to_be_removed)
-						brother = parent->right;
-					else
-						brother = parent->left;
-
-					if (direction == RIGHT)
-						parent->right = new_child;
-					else
-						parent->left = new_child;
-					new_child->parent = parent;
-
-
+			}
+			else {
+				new_child = to_be_removed->right;
+				// случай с to_be_removed == root рассмотрен отдельно ( это исключает left == begin && right == end)
+				if (to_be_removed->left == _begin) {
+					if (!_is_end(*new_child)) {
+						new_child->left = _begin;
+						_begin->parent = new_child;
+					}
+					else {
+						new_child = _begin;
+					}
 				}
 			}
 
+			if (to_be_removed->color == RED) {
+				_e_case_parent_red_child_black(parent, to_be_removed, new_child, direction);
+			}
+			else {
+				if (new_child->color == RED) {
+					new_child->color = BLACK;
+					_e_case_parent_red_child_black(parent, to_be_removed, new_child, direction);
+				}
+				else {
+					if (direction == RIGHT) {
+						brother = parent->left;
+						parent->right = new_child;
+					}
+					else {
+						brother = parent->right;
+						parent->left = new_child;
+					}
+					new_child->parent = parent;
+
+
+					// wiki case 2: sibling is red
+					if (brother->color == RED) {
+						parent->color = RED;
+						brother->color = BLACK;
+						//  left rotate // todo всегда ли левое вращение????
+						if (parent == _root) {
+							_root = _left_rotation(brother);
+							_root->parent = _leaf;
+						}
+						else {
+							t_node* grandparent = parent->parent;
+							if (parent == grandparent->left) {
+								grandparent->left = _left_rotation(brother);
+								grandparent->left->parent = grandparent;
+							} else {
+								grandparent->right = _left_rotation(brother);
+								grandparent->right->parent = grandparent;
+							}
+						}
+						brother = (parent->right == new_child) ? parent->left : parent->right;
+						//todo
+						// потенциально могут вызываться дальше другие случаи (значения уже изменены)
+					}
+
+					if (brother->color == BLACK) {
+						// wiki case 3: parent, sibling and his kids are black
+						if (parent->color == BLACK && brother->left->color == BLACK && brother->right->color == BLACK) {
+							brother->color = RED;
+
+							// todo
+							// необходимо вызвать рекурсию (начать смотреть со случая 2)
+							new_child = parent;
+						}
+
+						// wiki case 4: parent is red, but sibling and his kids are black
+						if (parent->color == RED && brother->left->color == BLACK && brother->right->color == BLACK) {
+							parent->color = BLACK;
+							brother->color = RED;
+							// done
+						}
+
+						// wiki case 5: sibling is black, left child is red, right child is black and new_child direction is left
+
+
+						// wiki case 6: sibling is black, right child is red and new_child direction is left
+					}
+				}
+			}
+
+			return 0; // todo
 
 		}
 		void erase (iterator first, iterator last)
@@ -906,7 +964,7 @@ namespace ft
 		// return value: if tree is empty - second=false and first=_root
 		// 				 if node already exist - second=false and first=node
 		// 				 if position was found - second=direction and first=parent
-		ft::pair<t_node *, bool> _find_pos(const key_type &val)
+		ft::pair<t_node *, bool> _find_position_for_new_node(const key_type &val)
 		{
 			t_node	*parent;
 			t_node	*tmp_r;

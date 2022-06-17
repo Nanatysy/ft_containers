@@ -5,14 +5,16 @@
 #include "map.hpp"
 #include <map>
 
+typedef int maped_type;
+
 int main()
 {
-	ft::map<int, int> first;
+	ft::map<int, maped_type> first;
 //	first.print_tree();
 
 
-	ft::map<int, int>::iterator it = first.begin();
-	ft::map<int, int>::iterator ite = first.end();
+	ft::map<int, maped_type>::iterator it = first.begin();
+	ft::map<int, maped_type>::iterator ite = first.end();
 
 	while (it != ite)
 	{
@@ -25,21 +27,21 @@ int main()
 	std::cout << std::endl << "---------------------" << std::endl;
 
 
-	std::vector<ft::pair<int, int> > ref;
+	std::vector<ft::pair<int, maped_type> > ref;
 	for (int i = 1; i < 11; i++)
 	{
 		ref.push_back(ft::make_pair(i, i));
 		ref.push_back(ft::make_pair(50 + i, 50 + i));
 	}
-	ft::map<int, int> second(ref.begin(), ref.end());
+	ft::map<int, maped_type> second(ref.begin(), ref.end());
 
 	std::cout << std::endl << "---------------------" << std::endl;
 
 	second.print_tree();
 	std::cout << std::endl;
 
-	ft::map<int, int>::iterator it2 = second.begin();
-	ft::map<int, int>::iterator ite2 = second.end();
+	ft::map<int, maped_type>::iterator it2 = second.begin();
+	ft::map<int, maped_type>::iterator ite2 = second.end();
 	while(it2 != ite2)
 	{
 		std::cout << it2->second << " ";
@@ -50,7 +52,7 @@ int main()
 	std::cout << std::endl << "----------&----------" << std::endl;
 
 //	ft::map<int, int>::iterator td = second.find(10);
-	second.erase(80);
+	second.erase(57);
 
 	second.print_tree();
 	std::cout << std::endl;
