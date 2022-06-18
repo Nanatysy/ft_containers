@@ -145,7 +145,7 @@ namespace ft
 	private:
 		class value_compare
 		{
-			
+
 		};
 
 	public:
@@ -555,6 +555,7 @@ namespace ft
 					}
 				}
 			}
+			_erase_balance(new_child);
 
 			if (to_be_removed->color == RED) {
 				_e_case_parent_red_child_black(parent, to_be_removed, new_child, direction);
@@ -606,7 +607,7 @@ namespace ft
 							brother->color = RED;
 
 							// todo
-							// необходимо вызвать рекурсию (начать смотреть со случая 2)
+							//  необходимо вызвать рекурсию (начать смотреть со случая 2)
 							new_child = parent;
 						}
 
@@ -619,12 +620,29 @@ namespace ft
 
 						// wiki case 5: sibling is black, left child is red, right child is black and new_child direction is left
 						if (brother->color == BLACK && brother->left->color == RED && brother->right->color == BLACK && direction == LEFT) {
+							brother->color = RED;
+							brother->left->color = BLACK;
+							parent->right = _right_rotation(brother);
+							parent->right->parent = parent;
 
+							brother = parent->right;
 						}
 
 						// wiki case 6: sibling is black, right child is red and new_child direction is left
 						if (brother->color == BLACK && brother->right->color == RED && direction == LEFT) {
-
+							brother->color = parent->color;
+							parent->color = BLACK;
+							brother->right->color = BLACK;
+							// todo: check if parent == root
+							t_node* grandparent = parent->parent;
+							if (parent == grandparent->right) {
+								grandparent->right = _left_rotation(brother);
+								grandparent->right->parent = grandparent;
+							}
+							else {
+								grandparent->left = _left_rotation(brother);
+								grandparent->left->parent = grandparent;
+							}
 						}
 					}
 				}
@@ -633,8 +651,17 @@ namespace ft
 			return 0; // todo
 
 		}
+		// todo !!!!!!!!!
 		void erase (iterator first, iterator last)
 		{
+			std::vector<value_type> elements_to_be_deleted;
+			for (; first != last; ++first) {
+				elements_to_be_deleted.push_back(*first);
+			}
+			typename std::vector<value_type>::const_iterator it = elements_to_be_deleted.begin();
+			for (; it != elements_to_be_deleted.end(); ++it) {
+				erase(it->first);
+			}
 
 		}
 		void swap (map& x)
@@ -995,6 +1022,27 @@ namespace ft
 					return (ft::make_pair(parent, false)); // key already exist, parent - key
 			}
 			return (ft::make_pair(parent, direction));
+		}
+
+		void _check_case_red_sibling(t_node* new_child, t_node* parent, t_node* brother, bool direction)
+		{
+
+		}
+
+		void _erase_balance(t_node* new_child)
+		{
+			if (new_child == _root) {
+				return ;
+			}
+
+			t_node	*parent;
+			t_node	*brother;
+			bool	direction;
+
+			parent = new_child->parent;
+			direction = (new_child == parent->right) ? RIGHT : LEFT;
+			brother = (direction == RIGHT) ? parent->left : parent->right;
+
 		}
 
 		#define COUNT 5
