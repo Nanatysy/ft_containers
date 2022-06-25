@@ -195,7 +195,7 @@ namespace ft
 		template <class InputIterator>
 		map (InputIterator first, typename ft::enable_if<ft::is_iterator <InputIterator>::value, InputIterator>::type last,
 			 const key_compare& comp = key_compare(),
-			 const allocator_type& alloc = allocator_type()) : _compare(comp), _alloc(alloc), _size(0)
+			 const allocator_type& alloc = allocator_type()) : _alloc(alloc), _compare(comp), _size(0)
 		{
 			_leaf = _new_node();
 			_begin = _new_node();
@@ -489,28 +489,26 @@ namespace ft
 				_size++;
 			}
 		}
-		void erase (iterator position)
-		{
-			t_node	*to_be_removed;
-			t_node	*new_child;
-			t_node	**parent;
-			bool	direction;
-			bool	first;
-
-
-		}
+//		void erase (iterator position)
+//		{
+////			t_node	*to_be_removed;
+////			t_node	*new_child;
+////			t_node	**parent;
+////			bool	direction;
+////			bool	first;
+//
+//
+//		}
 		size_type erase (const key_type& k)
 		{
 			t_node	*to_be_removed;
 			t_node	*new_child;
 			t_node	*parent;
-			t_node	*brother;
 			bool	direction;
-			bool	first;
 			ft::pair<t_node *, bool> pos;
 
 			if (_is_end(*_root)) // tree is empty
-				return (0);
+				return (0); // return the number of erased nodes
 
 			pos = _find_position_for_new_node(k);
 			if (pos.second == true || (pos.second == false && pos.first->val.first != k)) // key doesn't exist
@@ -555,7 +553,6 @@ namespace ft
 					}
 				}
 			}
-			_erase_balance(new_child);
 
 			if (to_be_removed->color == RED) {
 				_e_case_parent_red_child_black(parent, to_be_removed, new_child, direction);
@@ -567,16 +564,18 @@ namespace ft
 				}
 				else {
 					if (direction == RIGHT) {
-						brother = parent->left;
 						parent->right = new_child;
-					}
-					else {
-						brother = parent->right;
+					} else {
 						parent->left = new_child;
 					}
 					new_child->parent = parent;
+					_alloc.destroy(&to_be_removed->val);
+					delete to_be_removed;
 
+					_erase_balance(new_child);
+				}
 
+/*
 					// wiki case 2: sibling is red
 					if (brother->color == RED) {
 						parent->color = RED;
@@ -644,11 +643,10 @@ namespace ft
 								grandparent->left->parent = grandparent;
 							}
 						}
-					}
-				}
+					}*/
 			}
-
-			return 0; // todo
+			_size--;
+			return (1); // return the number of erased nodes
 
 		}
 		// todo !!!!!!!!!
@@ -827,7 +825,7 @@ namespace ft
 			next->color = BLACK;
 			return (next);
 		}
-		t_node *_new_node(ft::pair<const Key, T> value)
+		t_node *_new_node(const ft::pair<const Key, T>& value)
 		{
 			t_node *next = new t_node;
 
@@ -838,7 +836,7 @@ namespace ft
 			_alloc.construct(&next->val, value);
 			return (next);
 		}
-		t_node *_new_node(const t_node & src, const map<Key, T> & ref)
+		t_node *_new_node(const t_node & src, const map<Key, T>& ref)
 		{
 			t_node *next = new t_node;
 
@@ -970,7 +968,7 @@ namespace ft
 			delete to_be_removed;
 		}
 
-		t_node *_left_rotation(t_node *parent)
+		static t_node *_left_rotation(t_node *parent)
 		{
 			t_node *tmp;
 
@@ -981,7 +979,7 @@ namespace ft
 			tmp->parent = parent->left;
 			return (parent);
 		}
-		t_node *_right_rotation(t_node *parent)
+		static t_node *_right_rotation(t_node *parent)
 		{
 			t_node *tmp;
 
@@ -1005,7 +1003,7 @@ namespace ft
 
 			parent = _root;
 			if (_is_end(*parent))
-				return (ft::make_pair(parent, false));
+				return (ft::make_pair<t_node *, bool>(parent, false));
 
 			tmp_r = parent->right;
 			tmp_l = parent->left;
@@ -1024,9 +1022,151 @@ namespace ft
 			return (ft::make_pair(parent, direction));
 		}
 
-		void _check_case_red_sibling(t_node* new_child, t_node* parent, t_node* brother, bool direction)
+		void _check_wiki_case_2(t_node* new_child, t_node* parent, t_node* brother, bool direction)
 		{
+			// wiki case 2: sibling is red
+			if (brother->color == RED) {
+				parent->color = RED;
+				brother->color = BLACK;
 
+				t_node* (*rotation)(t_node*) = (direction == LEFT) ? &_left_rotation : &_right_rotation;
+				if (parent == _root) {
+					_root = rotation(brother);
+					_root->parent = _leaf;
+				}
+				else {
+					t_node* grandparent = parent->parent;
+					if (parent == grandparent->left) {
+						grandparent->left = rotation(brother);
+						grandparent->left->parent = grandparent;
+					} else {
+						grandparent->right = rotation(brother);
+						grandparent->right->parent = grandparent;
+					}
+				}
+				brother = (direction == RIGHT) ? parent->left : parent->right;
+			}
+			_check_wiki_case_3(new_child, parent, brother, direction);
+		}
+
+		void _check_wiki_case_3(t_node* new_child, t_node* parent, t_node* brother, bool direction) // wiki case 3
+		{
+			// wiki case 3: parent, sibling and his kids are black
+			if (brother->color == BLACK) {
+				if (parent->color == BLACK && brother->left->color == BLACK && brother->right->color == BLACK) {
+					brother->color = RED;
+					new_child = parent;
+					_erase_balance(new_child);
+//					parent = new_child->parent;
+//					direction = (new_child == parent->right) ? RIGHT : LEFT;
+//					brother = (direction == RIGHT) ? parent->left : parent->right;
+//					_check_wiki_case_2(new_child, parent, brother, direction);
+				}
+			}
+			_check_wiki_case_4(parent, brother, direction);
+		}
+
+		void _check_wiki_case_4(t_node* parent, t_node* brother, bool direction) // wiki 4
+		{
+			// wiki case 4: parent is red, but sibling and his kids are black
+			if (parent->color == RED && brother->left->color == BLACK && brother->right->color == BLACK) {
+				parent->color = BLACK;
+				brother->color = RED;
+				// done
+			}
+			else {
+				_check_wiki_case_5(parent, brother, direction);
+			}
+		}
+
+		void _check_wiki_case_5(t_node* parent, t_node* brother, bool direction) {
+			// wiki case 5: sibling is black, left child is red, right child is black and new_child direction is left
+			if (brother->color == BLACK && brother->left->color == RED && brother->right->color == BLACK && direction == LEFT) {
+				brother->color = RED;
+				brother->left->color = BLACK;
+
+				if (parent == _root) {
+					_root = _left_rotation(brother);
+					_root->parent = _leaf;
+				}
+				else {
+					t_node* grandparent = parent->parent;
+					if (parent == grandparent->left) {
+						grandparent->left = _left_rotation(brother);
+						grandparent->left->parent = grandparent;
+					} else {
+						grandparent->right = _left_rotation(brother);
+						grandparent->right->parent = grandparent;
+					}
+				}
+				brother = parent->right;
+			}
+			else if (brother->color == BLACK && brother->left->color == BLACK && brother->right->color == RED && direction == RIGHT) {
+				brother->color = RED;
+				brother->left->color = BLACK;
+
+				if (parent == _root) {
+					_root = _right_rotation(brother);
+					_root->parent = _leaf;
+				}
+				else {
+					t_node* grandparent = parent->parent;
+					if (parent == grandparent->left) {
+						grandparent->left = _right_rotation(brother);
+						grandparent->left->parent = grandparent;
+					} else {
+						grandparent->right = _right_rotation(brother);
+						grandparent->right->parent = grandparent;
+					}
+				}
+				brother = parent->left;
+			}
+			_check_wiki_case_6(parent, brother, direction);
+		}
+
+		void _check_wiki_case_6(t_node* parent, t_node* brother, bool direction) {
+			// wiki case 6: sibling is black
+			if (brother->color == BLACK) {
+				brother->color = parent->color;
+				parent->color = BLACK;
+
+				t_node* grandparent;
+				grandparent = parent->parent;
+				if (direction == LEFT) {
+					if (brother->right->color == RED) {
+						brother->right->color = BLACK;
+						if (parent == _root) {
+							_root = _left_rotation(brother);
+							_root->parent = _leaf;
+						}
+						else if (grandparent->right == parent) {
+							grandparent->right = _left_rotation(brother);
+							grandparent->right->parent = grandparent;
+						}
+						else {
+							grandparent->left = _left_rotation(brother);
+							grandparent->left->parent = grandparent;
+						}
+					}
+				}
+				else {
+					if (brother->left->color == RED) {
+						brother->left->color = BLACK;
+						if (parent == _root) {
+							_root = _right_rotation(brother);
+							_root->parent = _leaf;
+						}
+						else if (grandparent->right == parent) {
+							grandparent->right = _right_rotation(brother);
+							grandparent->right->parent = grandparent;
+						}
+						else {
+							grandparent->left = _right_rotation(brother);
+							grandparent->left->parent = grandparent;
+						}
+					}
+				}
+			}
 		}
 
 		void _erase_balance(t_node* new_child)
@@ -1042,7 +1182,7 @@ namespace ft
 			parent = new_child->parent;
 			direction = (new_child == parent->right) ? RIGHT : LEFT;
 			brother = (direction == RIGHT) ? parent->left : parent->right;
-
+			_check_wiki_case_2(new_child, parent, brother, direction);
 		}
 
 		#define COUNT 5

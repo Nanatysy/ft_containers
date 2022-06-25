@@ -52,9 +52,18 @@ int main()
 	std::cout << std::endl << "----------&----------" << std::endl;
 
 //	ft::map<int, int>::iterator td = second.find(10);
-	second.erase(57);
+	second.erase(9);
 
 	second.print_tree();
+	std::cout << std::endl;
+
+	it2 = second.begin();
+	ite2 = second.end();
+	while(it2 != ite2)
+	{
+		std::cout << it2->second << " ";
+		it2++;
+	}
 	std::cout << std::endl;
 
 //	it2 = second.begin();

@@ -1,9 +1,13 @@
 cmake_minimum_required(VERSION 3.20)
 project(ft_containers)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 98)
 
-#set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -std=c++98")
+set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -std=c++98")
+
+enable_testing()
+find_package(GTest REQUIRED)
+include_directories(${GTEST_INCLUDE_DIR})
 
 include_directories(.)
 
@@ -50,3 +54,9 @@ add_executable(range.cpp
         pair.hpp
         range.cpp
         )
+
+add_executable(gtest
+        my_tests/vtest.cpp)
+
+target_link_libraries(gtest
+        gtest_main)

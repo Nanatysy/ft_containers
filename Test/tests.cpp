@@ -9,7 +9,7 @@
 //#include "../Container/list.hpp"
 //#include "../Container/stack.hpp"
 //#include "../Container/queue.hpp"
-//#include "../Container/map.hpp"
+#include "../map.hpp"
 #include "test_color.hpp"
 
 
@@ -1308,376 +1308,376 @@ void vectorTests()
 //	}
 //}
 
-//void mapTest()
-//{
-//	cout << "Constructor test:" << endl;
-//	{
-//		std::map<double, double> stdMap;
-//		ft::map<double, double> ftMap;
-//		if (containerEquals(stdMap, ftMap))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//	}
-//	{
-//		std::map<double, double> test;
-//		for (int i = 0; i < 100; ++i)
-//			test.insert(std::pair<double, double>(i, i * 6));
-//		std::map<double, double> stdMap(test.begin(), test.end());
-//		ft::map<double, double> ftMap(test.begin(), test.end());
-//		if (containerEquals(stdMap, ftMap))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//	}
-//	{
-//		std::map<double, double> stdTest;
-//		ft::map<double, double> ftTest;
-//		for (int i = 0; i < 100; ++i)
-//		{
-//			stdTest.insert(std::pair<double, double>(i, i * 6));
-//			ftTest.insert(std::pair<double, double>(i, i * 6));
-//		}
-//		std::map<double, double> stdMap(stdTest);
-//		ft::map<double, double> ftMap(ftTest);
-//		if (containerEquals(stdMap, ftMap))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//	}
-//	cout << endl << "Operator= test:" << endl;
-//	{
-//		std::map<double, double> stdTest;
-//		ft::map<double, double> ftTest;
-//		for (int i = 0; i < 100; ++i)
-//		{
-//			stdTest.insert(std::pair<double, double>(i, i * 6));
-//			ftTest.insert(std::pair<double, double>(i, i * 6));
-//		}
-//		std::map<double, double> stdMap;
-//		ft::map<double, double> ftMap;
-//		stdMap = stdTest;
-//		ftMap = ftTest;
-//		if (containerEquals(stdMap, ftMap))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//	}
-//	cout << endl << "Iterator test:" << endl;
-//	{
-//		std::map<double, double> stdMap;
-//		ft::map<double, double> ftMap;
-//		double value;
-//		for (int i = 0; i < 20; ++i)
-//		{
-//			value = rand() % 100;
-//			stdMap.insert(std::pair<double, double>(value, i * 6));
-//			ftMap.insert(std::pair<double, double>(value, i * 6));
-//		}
-//		if (iteratorEqualsWorkedMap(stdMap.begin(), stdMap.end(), ftMap.begin(), ftMap.end()))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//		if (iteratorEqualsWorkedMap(stdMap.rbegin(), stdMap.rend(), ftMap.rbegin(), ftMap.rend()))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//		if (iteratorEqualsWorkedMap((std::map<double, double>::const_iterator) stdMap.begin(), (std::map<double, double>::const_iterator) stdMap.end(), (ft::map<double, double>::const_iterator) ftMap.begin(), (ft::map<double, double>::const_iterator) ftMap.end()))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//		if (iteratorEqualsWorkedMap((std::map<double, double>::const_reverse_iterator) stdMap.rbegin(), (std::map<double, double>::const_reverse_iterator) stdMap.rend(), (ft::map<double, double>::const_reverse_iterator) ftMap.rbegin(), (ft::map<double, double>::const_reverse_iterator) ftMap.rend()))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//	}
-//	cout << endl << "Size test:" << endl;
-//	{
-//		std::map<double, double> test;
-//		for (int i = 0; i < 100; ++i)
-//			test.insert(std::pair<double, double>(i, i * 6));
-//		std::map<double, double> stdMap(test.begin(), test.end());
-//		ft::map<double, double> ftMap(test.begin(), test.end());
-//		if (ftMap.size() == stdMap.size())
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//	}
-//	cout << endl << "Max_size test:" << endl;
-//	{
-//		std::map<double, double> test;
-//		for (int i = 0; i < 100; ++i)
-//			test.insert(std::pair<double, double>(i, i * 6));
-//		std::map<double, double> stdMap(test.begin(), test.end());
-//		ft::map<double, double> ftMap(test.begin(), test.end());
-//		cout << GREEN << "std: " << stdMap.max_size() << YELLOW << " | ft: " << ftMap.max_size() << RESET << endl;
-//	}
-//	cout << "Operator[] test:" << endl;
-//	{
-//		std::map<double, double> test;
-//		for (int i = 0; i < 100; ++i)
-//			test.insert(std::pair<double, double>(i, i * 6));
-//		std::map<double, double> stdMap(test.begin(), test.end());
-//		ft::map<double, double> ftMap(test.begin(), test.end());
-//		std::stringstream ft;
-//		std::stringstream std;
-//		for (int i = 0; i < 200; ++i)
-//		{
-//			ft << stdMap[i];
-//			std << stdMap[i];
-//		}
-//		if (ft.str() == std.str())
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//	}
-//	cout << endl << "Insert test:" << endl;
-//	{
-//		std::map<double, double> test;
-//		for (int i = 0; i < 100; ++i)
-//			test.insert(std::pair<double, double>(i, i * 6));
-//		std::map<double, double> stdMap(test.begin(), test.end());
-//		ft::map<double, double> ftMap(test.begin(), test.end());
-//		stdMap.insert(std::pair<double, double>(66, 99));
-//		ftMap.insert(std::pair<double, double>(66, 99));
-//		if (containerEquals(stdMap, ftMap))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//		stdMap.insert(++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++stdMap.begin(), std::pair<double, double>(66, 99));
-//		ftMap.insert(++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ftMap.begin(), std::pair<double, double>(66, 99));
-//		if (containerEquals(stdMap, ftMap))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//		stdMap.insert(test.begin(), test.end());
-//		ftMap.insert(test.begin(), test.end());
-//		if (containerEquals(stdMap, ftMap))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//	}
-//	cout << endl << "Erase test:" << endl;
-//	{
-//		std::list<double> stdMap(200, 666);
-//		ft::list<double> ftMap(200, 666);
-//		stdMap.erase(++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++stdMap.begin());
-//		ftMap.erase(++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ftMap.begin());
-//		if (containerEquals(stdMap, ftMap))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//		stdMap.erase(++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++stdMap.begin(), ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++stdMap.begin());
-//		ftMap.erase(++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ftMap.begin(), ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ftMap.begin());
-//		if (containerEquals(stdMap, ftMap))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//	}
-//	cout << endl << "Swap test:" << endl;
-//	{
-//		std::list<double> stdMap(200, 666);
-//		ft::list<double> ftMap(200, 666);
-//		std::list<double> stdMapCopy;
-//		ft::list<double> ftMapCopy;
-//		stdMap.swap(stdMapCopy);
-//		ftMap.swap(ftMapCopy);
-//		if (containerEquals(stdMap, ftMap))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//		if (containerEquals(stdMapCopy, ftMapCopy))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//		cout << endl << "Clear test:" << endl;
-//		stdMapCopy.clear();
-//		ftMapCopy.clear();
-//		if (containerEquals(stdMapCopy, ftMapCopy))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//	}
-//	cout << endl << "Key_comp test:" << endl;
-//	{
-//		std::map<double, double> test;
-//		for (int i = 0; i < 100; ++i)
-//			test.insert(std::pair<double, double>(i, i * 6));
-//		std::map<double, double> stdMap(test.begin(), test.end());
-//		ft::map<double, double> ftMap(test.begin(), test.end());
-//		std::map<double, double>::key_compare first = stdMap.key_comp();
-//		ft::map<double, double>::key_compare second = ftMap.key_comp();
-//		if (first(22, 44) == second(22, 44))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//	}
-//	cout << endl << "Value_comp test:" << endl;
-//	{
-//		std::map<double, double> test;
-//		for (int i = 0; i < 100; ++i)
-//			test.insert(std::pair<double, double>(i, i * 6));
-//		std::map<double, double> stdMap(test.begin(), test.end());
-//		ft::map<double, double> ftMap(test.begin(), test.end());
-//		if (stdMap.key_comp()(22, 44) == ftMap.key_comp()(22, 44))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//	}
-//	cout << endl << "Find test:" << endl;
-//	{
-//		std::map<double, double> stdMap;
-//		ft::map<double, double> ftMap;
-//		double value;
-//		for (int i = 0; i < 20; ++i)
-//		{
-//			value = rand() % 100;
-//			stdMap.insert(std::pair<double, double>(value, i * 6));
-//			ftMap.insert(std::pair<double, double>(value, i * 6));
-//		}
-//		if (*(stdMap.find((++ ++ ++ ++ ++ ++stdMap.begin())->first)) == *(ftMap.find((++ ++ ++ ++ ++ ++stdMap.begin())->first)))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//	}
-//	cout << endl << "Count test:" << endl;
-//	{
-//		std::map<double, double> stdMap;
-//		ft::map<double, double> ftMap;
-//		double value;
-//		for (int i = 0; i < 20; ++i)
-//		{
-//			value = rand() % 100;
-//			stdMap.insert(std::pair<double, double>(value, i * 6));
-//			ftMap.insert(std::pair<double, double>(value, i * 6));
-//		}
-//		if (stdMap.count((++ ++ ++ ++ ++ ++stdMap.begin())->first) == ftMap.count((++ ++ ++ ++ ++ ++stdMap.begin())->first))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//	}
-//	cout << endl << "Lower_bound test:" << endl;
-//	{
-//		std::map<double, double> stdMap;
-//		ft::map<double, double> ftMap;
-//		double value;
-//		for (int i = 0; i < 20; ++i)
-//		{
-//			value = rand() % 100;
-//			stdMap.insert(std::pair<double, double>(value, i * 6));
-//			ftMap.insert(std::pair<double, double>(value, i * 6));
-//		}
-//		if (*(stdMap.lower_bound((++ ++ ++ ++ ++ ++stdMap.begin())->first)) ==
-//		    *(ftMap.lower_bound((++ ++ ++ ++ ++ ++stdMap.begin())->first)))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//	}
-//	cout << endl << "Upper_bound test:" << endl;
-//	{
-//		std::map<double, double> stdMap;
-//		ft::map<double, double> ftMap;
-//		double value;
-//		for (int i = 0; i < 20; ++i)
-//		{
-//			value = rand() % 100;
-//			stdMap.insert(std::pair<double, double>(value, i * 6));
-//			ftMap.insert(std::pair<double, double>(value, i * 6));
-//		}
-//		if (*(stdMap.upper_bound((++ ++ ++ ++ ++ ++stdMap.begin())->first)) ==
-//		    *(ftMap.upper_bound((++ ++ ++ ++ ++ ++stdMap.begin())->first)))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//	}
-//	cout << endl << "Equal_range test:" << endl;
-//	{
-//		std::map<double, double> stdMap;
-//		ft::map<double, double> ftMap;
-//		double value;
-//		for (int i = 0; i < 20; ++i)
-//		{
-//			value = rand() % 100;
-//			stdMap.insert(std::pair<double, double>(value, i * 6));
-//			ftMap.insert(std::pair<double, double>(value, i * 6));
-//		}
-//		std::pair<std::map<double, double>::iterator, std::map<double, double>::iterator> first = stdMap.equal_range((++ ++ ++ ++ ++ ++stdMap.begin())->first);
-//		std::pair<ft::map<double, double>::iterator, ft::map<double, double>::iterator> second = ftMap.equal_range((++ ++ ++ ++ ++ ++stdMap.begin())->first);
-//		if (iteratorEqualsWorkedMap(first.first, first.second, second.first, second.second))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//	}
-//	cout << endl << "Relational operators test: (Non-member function)" << endl;
-//	{
-//		std::map<double, double> stdMap1;
-//		ft::map<double, double> ftMap1;
-//		std::map<double, double> stdMap2;
-//		ft::map<double, double> ftMap2;
-//		double value;
-//		for (int i = 0; i < 20; ++i)
-//		{
-//			value = rand() % 100;
-//			stdMap1.insert(std::pair<double, double>(value, i * 6));
-//			ftMap1.insert(std::pair<double, double>(value, i * 6));
-//			value = rand() % 100;
-//			stdMap2.insert(std::pair<double, double>(value, i * 33));
-//			ftMap2.insert(std::pair<double, double>(value, i * 33));
-//		}
-//
-//		if ((stdMap1 == stdMap2) == (ftMap1 == ftMap2))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//		if ((stdMap1 != stdMap2) == (ftMap1 != ftMap2))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//		if ((stdMap1 < stdMap2) == (ftMap1 < ftMap2))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//		if ((stdMap1 > stdMap2) == (ftMap1 > ftMap2))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//		if ((stdMap1 <= stdMap2) == (ftMap1 <= ftMap2))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//		if ((stdMap1 >= stdMap2) == (ftMap1 >= ftMap2))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//	}
-//	cout << endl << "Swap test: (Non-member function)" << endl;
-//	{
-//		std::map<double, double> stdMap1;
-//		ft::map<double, double> ftMap1;
-//		std::map<double, double> stdMap2;
-//		ft::map<double, double> ftMap2;
-//		double value;
-//		for (int i = 0; i < 20; ++i)
-//		{
-//			value = rand() % 100;
-//			stdMap1.insert(std::pair<double, double>(value, i * 6));
-//			ftMap1.insert(std::pair<double, double>(value, i * 6));
-//			value = rand() % 100;
-//			stdMap2.insert(std::pair<double, double>(value, i * 33));
-//			ftMap2.insert(std::pair<double, double>(value, i * 33));
-//		}
-//		ft::swap(ftMap1, ftMap2);
-//		std::swap(stdMap1, stdMap2);
-//		if (containerEquals(ftMap1, stdMap1))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//		if (containerEquals(ftMap2, stdMap2))
-//			cout << GREEN << "[OK]" << RESET;
-//		else
-//			cout << RED << "[FAIL]" << RESET;
-//	}
-//}
+void mapTest()
+{
+	cout << "Constructor test:" << endl;
+	{
+		std::map<double, double> stdMap;
+		ft::map<double, double> ftMap;
+		if (containerEquals(stdMap, ftMap))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+	}
+	{
+		std::map<double, double> test;
+		for (int i = 0; i < 100; ++i)
+			test.insert(std::pair<double, double>(i, i * 6));
+		std::map<double, double> stdMap(test.begin(), test.end());
+		ft::map<double, double> ftMap(test.begin(), test.end());
+		if (containerEquals(stdMap, ftMap))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+	}
+	{
+		std::map<double, double> stdTest;
+		ft::map<double, double> ftTest;
+		for (int i = 0; i < 100; ++i)
+		{
+			stdTest.insert(std::pair<double, double>(i, i * 6));
+			ftTest.insert(std::pair<double, double>(i, i * 6));
+		}
+		std::map<double, double> stdMap(stdTest);
+		ft::map<double, double> ftMap(ftTest);
+		if (containerEquals(stdMap, ftMap))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+	}
+	cout << endl << "Operator= test:" << endl;
+	{
+		std::map<double, double> stdTest;
+		ft::map<double, double> ftTest;
+		for (int i = 0; i < 100; ++i)
+		{
+			stdTest.insert(std::pair<double, double>(i, i * 6));
+			ftTest.insert(std::pair<double, double>(i, i * 6));
+		}
+		std::map<double, double> stdMap;
+		ft::map<double, double> ftMap;
+		stdMap = stdTest;
+		ftMap = ftTest;
+		if (containerEquals(stdMap, ftMap))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+	}
+	cout << endl << "Iterator test:" << endl;
+	{
+		std::map<double, double> stdMap;
+		ft::map<double, double> ftMap;
+		double value;
+		for (int i = 0; i < 20; ++i)
+		{
+			value = rand() % 100;
+			stdMap.insert(std::pair<double, double>(value, i * 6));
+			ftMap.insert(std::pair<double, double>(value, i * 6));
+		}
+		if (iteratorEqualsWorkedMap(stdMap.begin(), stdMap.end(), ftMap.begin(), ftMap.end()))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+		if (iteratorEqualsWorkedMap(stdMap.rbegin(), stdMap.rend(), ftMap.rbegin(), ftMap.rend()))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+		if (iteratorEqualsWorkedMap((std::map<double, double>::const_iterator) stdMap.begin(), (std::map<double, double>::const_iterator) stdMap.end(), (ft::map<double, double>::const_iterator) ftMap.begin(), (ft::map<double, double>::const_iterator) ftMap.end()))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+		if (iteratorEqualsWorkedMap((std::map<double, double>::const_reverse_iterator) stdMap.rbegin(), (std::map<double, double>::const_reverse_iterator) stdMap.rend(), (ft::map<double, double>::const_reverse_iterator) ftMap.rbegin(), (ft::map<double, double>::const_reverse_iterator) ftMap.rend()))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+	}
+	cout << endl << "Size test:" << endl;
+	{
+		std::map<double, double> test;
+		for (int i = 0; i < 100; ++i)
+			test.insert(std::pair<double, double>(i, i * 6));
+		std::map<double, double> stdMap(test.begin(), test.end());
+		ft::map<double, double> ftMap(test.begin(), test.end());
+		if (ftMap.size() == stdMap.size())
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+	}
+	cout << endl << "Max_size test:" << endl;
+	{
+		std::map<double, double> test;
+		for (int i = 0; i < 100; ++i)
+			test.insert(std::pair<double, double>(i, i * 6));
+		std::map<double, double> stdMap(test.begin(), test.end());
+		ft::map<double, double> ftMap(test.begin(), test.end());
+		cout << GREEN << "std: " << stdMap.max_size() << YELLOW << " | ft: " << ftMap.max_size() << RESET << endl;
+	}
+	cout << "Operator[] test:" << endl;
+	{
+		std::map<double, double> test;
+		for (int i = 0; i < 100; ++i)
+			test.insert(std::pair<double, double>(i, i * 6));
+		std::map<double, double> stdMap(test.begin(), test.end());
+		ft::map<double, double> ftMap(test.begin(), test.end());
+		std::stringstream ft;
+		std::stringstream std;
+		for (int i = 0; i < 200; ++i)
+		{
+			ft << stdMap[i];
+			std << stdMap[i];
+		}
+		if (ft.str() == std.str())
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+	}
+	cout << endl << "Insert test:" << endl;
+	{
+		std::map<double, double> test;
+		for (int i = 0; i < 100; ++i)
+			test.insert(std::pair<double, double>(i, i * 6));
+		std::map<double, double> stdMap(test.begin(), test.end());
+		ft::map<double, double> ftMap(test.begin(), test.end());
+		stdMap.insert(std::pair<double, double>(66, 99));
+		ftMap.insert(std::pair<double, double>(66, 99));
+		if (containerEquals(stdMap, ftMap))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+		stdMap.insert(++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++stdMap.begin(), std::pair<double, double>(66, 99));
+		ftMap.insert(++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ftMap.begin(), std::pair<double, double>(66, 99));
+		if (containerEquals(stdMap, ftMap))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+		stdMap.insert(test.begin(), test.end());
+		ftMap.insert(test.begin(), test.end());
+		if (containerEquals(stdMap, ftMap))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+	}
+	cout << endl << "Erase test:" << endl;
+	{
+		std::list<double> stdMap(200, 666);
+		ft::list<double> ftMap(200, 666);
+		stdMap.erase(++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++stdMap.begin());
+		ftMap.erase(++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ftMap.begin());
+		if (containerEquals(stdMap, ftMap))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+		stdMap.erase(++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++stdMap.begin(), ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++stdMap.begin());
+		ftMap.erase(++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ftMap.begin(), ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ ++ftMap.begin());
+		if (containerEquals(stdMap, ftMap))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+	}
+	cout << endl << "Swap test:" << endl;
+	{
+		std::list<double> stdMap(200, 666);
+		ft::list<double> ftMap(200, 666);
+		std::list<double> stdMapCopy;
+		ft::list<double> ftMapCopy;
+		stdMap.swap(stdMapCopy);
+		ftMap.swap(ftMapCopy);
+		if (containerEquals(stdMap, ftMap))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+		if (containerEquals(stdMapCopy, ftMapCopy))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+		cout << endl << "Clear test:" << endl;
+		stdMapCopy.clear();
+		ftMapCopy.clear();
+		if (containerEquals(stdMapCopy, ftMapCopy))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+	}
+	cout << endl << "Key_comp test:" << endl;
+	{
+		std::map<double, double> test;
+		for (int i = 0; i < 100; ++i)
+			test.insert(std::pair<double, double>(i, i * 6));
+		std::map<double, double> stdMap(test.begin(), test.end());
+		ft::map<double, double> ftMap(test.begin(), test.end());
+		std::map<double, double>::key_compare first = stdMap.key_comp();
+		ft::map<double, double>::key_compare second = ftMap.key_comp();
+		if (first(22, 44) == second(22, 44))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+	}
+	cout << endl << "Value_comp test:" << endl;
+	{
+		std::map<double, double> test;
+		for (int i = 0; i < 100; ++i)
+			test.insert(std::pair<double, double>(i, i * 6));
+		std::map<double, double> stdMap(test.begin(), test.end());
+		ft::map<double, double> ftMap(test.begin(), test.end());
+		if (stdMap.key_comp()(22, 44) == ftMap.key_comp()(22, 44))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+	}
+	cout << endl << "Find test:" << endl;
+	{
+		std::map<double, double> stdMap;
+		ft::map<double, double> ftMap;
+		double value;
+		for (int i = 0; i < 20; ++i)
+		{
+			value = rand() % 100;
+			stdMap.insert(std::pair<double, double>(value, i * 6));
+			ftMap.insert(std::pair<double, double>(value, i * 6));
+		}
+		if (*(stdMap.find((++ ++ ++ ++ ++ ++stdMap.begin())->first)) == *(ftMap.find((++ ++ ++ ++ ++ ++stdMap.begin())->first)))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+	}
+	cout << endl << "Count test:" << endl;
+	{
+		std::map<double, double> stdMap;
+		ft::map<double, double> ftMap;
+		double value;
+		for (int i = 0; i < 20; ++i)
+		{
+			value = rand() % 100;
+			stdMap.insert(std::pair<double, double>(value, i * 6));
+			ftMap.insert(std::pair<double, double>(value, i * 6));
+		}
+		if (stdMap.count((++ ++ ++ ++ ++ ++stdMap.begin())->first) == ftMap.count((++ ++ ++ ++ ++ ++stdMap.begin())->first))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+	}
+	cout << endl << "Lower_bound test:" << endl;
+	{
+		std::map<double, double> stdMap;
+		ft::map<double, double> ftMap;
+		double value;
+		for (int i = 0; i < 20; ++i)
+		{
+			value = rand() % 100;
+			stdMap.insert(std::pair<double, double>(value, i * 6));
+			ftMap.insert(std::pair<double, double>(value, i * 6));
+		}
+		if (*(stdMap.lower_bound((++ ++ ++ ++ ++ ++stdMap.begin())->first)) ==
+		    *(ftMap.lower_bound((++ ++ ++ ++ ++ ++stdMap.begin())->first)))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+	}
+	cout << endl << "Upper_bound test:" << endl;
+	{
+		std::map<double, double> stdMap;
+		ft::map<double, double> ftMap;
+		double value;
+		for (int i = 0; i < 20; ++i)
+		{
+			value = rand() % 100;
+			stdMap.insert(std::pair<double, double>(value, i * 6));
+			ftMap.insert(std::pair<double, double>(value, i * 6));
+		}
+		if (*(stdMap.upper_bound((++ ++ ++ ++ ++ ++stdMap.begin())->first)) ==
+		    *(ftMap.upper_bound((++ ++ ++ ++ ++ ++stdMap.begin())->first)))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+	}
+	cout << endl << "Equal_range test:" << endl;
+	{
+		std::map<double, double> stdMap;
+		ft::map<double, double> ftMap;
+		double value;
+		for (int i = 0; i < 20; ++i)
+		{
+			value = rand() % 100;
+			stdMap.insert(std::pair<double, double>(value, i * 6));
+			ftMap.insert(std::pair<double, double>(value, i * 6));
+		}
+		std::pair<std::map<double, double>::iterator, std::map<double, double>::iterator> first = stdMap.equal_range((++ ++ ++ ++ ++ ++stdMap.begin())->first);
+		std::pair<ft::map<double, double>::iterator, ft::map<double, double>::iterator> second = ftMap.equal_range((++ ++ ++ ++ ++ ++stdMap.begin())->first);
+		if (iteratorEqualsWorkedMap(first.first, first.second, second.first, second.second))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+	}
+	cout << endl << "Relational operators test: (Non-member function)" << endl;
+	{
+		std::map<double, double> stdMap1;
+		ft::map<double, double> ftMap1;
+		std::map<double, double> stdMap2;
+		ft::map<double, double> ftMap2;
+		double value;
+		for (int i = 0; i < 20; ++i)
+		{
+			value = rand() % 100;
+			stdMap1.insert(std::pair<double, double>(value, i * 6));
+			ftMap1.insert(std::pair<double, double>(value, i * 6));
+			value = rand() % 100;
+			stdMap2.insert(std::pair<double, double>(value, i * 33));
+			ftMap2.insert(std::pair<double, double>(value, i * 33));
+		}
+
+		if ((stdMap1 == stdMap2) == (ftMap1 == ftMap2))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+		if ((stdMap1 != stdMap2) == (ftMap1 != ftMap2))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+		if ((stdMap1 < stdMap2) == (ftMap1 < ftMap2))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+		if ((stdMap1 > stdMap2) == (ftMap1 > ftMap2))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+		if ((stdMap1 <= stdMap2) == (ftMap1 <= ftMap2))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+		if ((stdMap1 >= stdMap2) == (ftMap1 >= ftMap2))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+	}
+	cout << endl << "Swap test: (Non-member function)" << endl;
+	{
+		std::map<double, double> stdMap1;
+		ft::map<double, double> ftMap1;
+		std::map<double, double> stdMap2;
+		ft::map<double, double> ftMap2;
+		double value;
+		for (int i = 0; i < 20; ++i)
+		{
+			value = rand() % 100;
+			stdMap1.insert(std::pair<double, double>(value, i * 6));
+			ftMap1.insert(std::pair<double, double>(value, i * 6));
+			value = rand() % 100;
+			stdMap2.insert(std::pair<double, double>(value, i * 33));
+			ftMap2.insert(std::pair<double, double>(value, i * 33));
+		}
+		ft::swap(ftMap1, ftMap2);
+		std::swap(stdMap1, stdMap2);
+		if (containerEquals(ftMap1, stdMap1))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+		if (containerEquals(ftMap2, stdMap2))
+			cout << GREEN << "[OK]" << RESET;
+		else
+			cout << RED << "[FAIL]" << RESET;
+	}
+}
 
 int main()
 {
