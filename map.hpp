@@ -15,7 +15,7 @@
 #include "iterator.hpp"
 #include <queue>
 
-// TODO: insert(when tree is empty) - doesn't work, erase, reverse_iterator, value_comp, cbegin, cend, lower_bound, upper_bound (with const iterator)
+// TODO: insert(when tree is empty) - doesn't work, reverse_iterator, value_comp, cbegin, cend, lower_bound, upper_bound (with const iterator)
 
 namespace ft
 {
@@ -142,7 +142,81 @@ namespace ft
 			const map<Key, T>	*_tree;
 		};
 
+		template <class Iter>
+		class _map_reverse_iterator {
+		public:
+			typedef Iter iterator_type;
+			typedef typename ft::iterator_traits<Iter>::iterator_category iterator_category;
+			typedef typename ft::iterator_traits<Iter>::value_type::value value_type;
+			typedef typename ft::iterator_traits<Iter>::difference_type difference_type;
+			typedef typename ft::iterator_traits<Iter>::pointer pointer;
+			typedef typename ft::iterator_traits<Iter>::reference reference;
+
+			_map_reverse_iterator() : _ptr(nullptr), _tree(nullptr) {}
+			explicit _map_reverse_iterator (iterator_type it, const map<Key, T> *x) : _ptr(it), _tree(x) {}
+			_map_reverse_iterator (const _map_reverse_iterator<Iter>& rev_it) {
+				*this = rev_it;
+			}
+
+			_map_reverse_iterator &operator=(const _map_reverse_iterator & src)
+			{
+				if (this == &src)
+					return (*this);
+
+				_ptr = src._ptr;
+				_tree = src._tree;
+				return (*this);
+			}
+
+			bool operator==(const _map_reverse_iterator & src)
+			{
+				return (this->_ptr == src._ptr);
+			}
+			bool operator!=(const _map_reverse_iterator & src)
+			{
+				return (this->_ptr != src._ptr);
+			}
+
+			_map_reverse_iterator<Iter> operator++()
+			{
+				this->ptr--;
+				return(this);
+			}
+			_map_reverse_iterator<Iter> operator++(int)
+			{
+				_map_reverse_iterator<Iter> tmp(*this);
+
+				++(*this);
+				return (tmp);
+			}
+			_map_reverse_iterator<Iter> operator--()
+			{
+				this->ptr++;
+				return(this);
+			}
+			_map_reverse_iterator<Iter> operator--(int)
+			{
+				_map_reverse_iterator<Iter> tmp(*this);
+
+				++(*this);
+				return (tmp);
+			}
+			value_type &operator*() const
+			{
+				return (_ptr->val);
+			}
+			value_type *operator->() const
+			{
+				return (&_ptr->val);
+			}
+
+		private:
+			iterator_type		_ptr;
+			const map<Key, T>	*_tree;
+		};
+
 	private:
+		// todo
 		class value_compare
 		{
 
@@ -154,7 +228,7 @@ namespace ft
 		typedef Alloc allocator_type;
 		typedef typename allocator_type::value_type value_type;
 		typedef Compare key_compare;
-//		typedef typename value_type:: value_compare;
+		typedef typename value_type::value_compare value_compare;
 
 		typedef typename allocator_type::reference reference;
 		typedef typename allocator_type::const_reference const_reference;
@@ -178,8 +252,8 @@ namespace ft
 	public:
 		typedef _map_iterator<t_node *> iterator;
 		typedef _map_iterator<const t_node *> const_iterator;
-//		typedef typename ft::_reverse_iterator<iterator> reverse_iterator;
-//		typedef typename ft::_reverse_iterator<const_iterator> const_reverse_iterator;
+		typedef typename ft::_reverse_iterator<iterator> reverse_iterator;
+		typedef typename ft::_reverse_iterator<const_iterator> const_reverse_iterator;
 
 
 		explicit map (const key_compare& comp = key_compare(),
@@ -250,12 +324,42 @@ namespace ft
 				return (iterator(_end, this));
 			return (iterator(_begin->parent, this));
 		}
-//		const_iterator begin() const;
+		// todo
+		const_iterator begin() const
+		{
+			if (_size == 0)
+				return (iterator(_end, this));
+			return (iterator(_begin->parent, this));
+		}
+		reverse_iterator rbegin()
+		{
+			iterator it = end();
+			return (reverse_iterator(--it));
+		}
+		const_reverse_iterator rbegin() const
+		{
+			const_iterator it = end();
+			return (const_reverse_iterator (--it));
+		}
 		iterator end()
 		{
 			return (iterator(_end, this));
 		}
-//		const_iterator end() const;
+		// todo
+		const_iterator end() const
+		{
+			return (iterator(_end, this));
+		}
+		reverse_iterator rend()
+		{
+			iterator it = begin();
+			return (reverse_iterator(--it));
+		}
+		const_reverse_iterator rend() const
+		{
+			const_iterator it = begin();
+			return (const_reverse_iterator(--it));
+		}
 
 //		capacity
 		bool empty() const
@@ -291,7 +395,7 @@ namespace ft
 				}
 				parent = tmp->parent;
 			}
-			// return (insert (parent, k))
+			 return (insert (parent, k));
 		}
 
 //		modifiers
@@ -313,7 +417,7 @@ namespace ft
 			direction = pos.second;
 			if (parent == _leaf)
 				_root = _case_root(new_elem);
-			else if (direction == false && _compare(pos.first->val.first, new_elem->val.first) == false)
+			else if (!direction && _compare(pos.first->val.first, new_elem->val.first) == false)
 			{
 				_delete_tree(new_elem);
 				return (pos); // already exist
@@ -382,16 +486,6 @@ namespace ft
 		}
 		iterator insert (iterator position, const value_type& val)
 		{
-//			t_node *child;
-//			bool direction;
-//
-//			direction = _compare(val.first, position->val.first);
-//			child = (direction) ? position->left : position->right;
-//			if (!_is_end(*child))
-//				return (this->insert(val).first);
-//			//use hint?
-
-			// забить на подсказку
 			(void)position;
 			return (this->insert(val).first);
 		}
@@ -437,9 +531,6 @@ namespace ft
 				direction ? parent->left = new_elem : parent->right = new_elem;
 				new_elem->parent = parent;
 				child = new_elem;
-//
-//						print_tree();
-//						std::cout << std::endl << "------------------" << std::endl;
 
 				//check if tree isn't balanced
 				while (parent->color == RED && child->color == RED)
@@ -481,24 +572,15 @@ namespace ft
 					}
 					parent = child->parent;
 				}
-
-//				print_tree();
-//				std::cout << std::endl << "------------------" << std::endl;
-
 				first++;
 				_size++;
 			}
 		}
-//		void erase (iterator position)
-//		{
-////			t_node	*to_be_removed;
-////			t_node	*new_child;
-////			t_node	**parent;
-////			bool	direction;
-////			bool	first;
-//
-//
-//		}
+		void erase (iterator position)
+		{
+			key_type key = (*position)->first;
+			erase(key);
+		}
 		size_type erase (const key_type& k)
 		{
 			t_node	*to_be_removed;
@@ -574,84 +656,13 @@ namespace ft
 
 					_erase_balance(new_child);
 				}
-
-/*
-					// wiki case 2: sibling is red
-					if (brother->color == RED) {
-						parent->color = RED;
-						brother->color = BLACK;
-						//  left rotate // todo всегда ли левое вращение????
-						if (parent == _root) {
-							_root = _left_rotation(brother);
-							_root->parent = _leaf;
-						}
-						else {
-							t_node* grandparent = parent->parent;
-							if (parent == grandparent->left) {
-								grandparent->left = _left_rotation(brother);
-								grandparent->left->parent = grandparent;
-							} else {
-								grandparent->right = _left_rotation(brother);
-								grandparent->right->parent = grandparent;
-							}
-						}
-						brother = (parent->right == new_child) ? parent->left : parent->right;
-						//todo
-						// потенциально могут вызываться дальше другие случаи (значения уже изменены)
-					}
-
-					if (brother->color == BLACK) {
-						// wiki case 3: parent, sibling and his kids are black
-						if (parent->color == BLACK && brother->left->color == BLACK && brother->right->color == BLACK) {
-							brother->color = RED;
-
-							// todo
-							//  необходимо вызвать рекурсию (начать смотреть со случая 2)
-							new_child = parent;
-						}
-
-						// wiki case 4: parent is red, but sibling and his kids are black
-						if (parent->color == RED && brother->left->color == BLACK && brother->right->color == BLACK) {
-							parent->color = BLACK;
-							brother->color = RED;
-							// done
-						}
-
-						// wiki case 5: sibling is black, left child is red, right child is black and new_child direction is left
-						if (brother->color == BLACK && brother->left->color == RED && brother->right->color == BLACK && direction == LEFT) {
-							brother->color = RED;
-							brother->left->color = BLACK;
-							parent->right = _right_rotation(brother);
-							parent->right->parent = parent;
-
-							brother = parent->right;
-						}
-
-						// wiki case 6: sibling is black, right child is red and new_child direction is left
-						if (brother->color == BLACK && brother->right->color == RED && direction == LEFT) {
-							brother->color = parent->color;
-							parent->color = BLACK;
-							brother->right->color = BLACK;
-							// todo: check if parent == root
-							t_node* grandparent = parent->parent;
-							if (parent == grandparent->right) {
-								grandparent->right = _left_rotation(brother);
-								grandparent->right->parent = grandparent;
-							}
-							else {
-								grandparent->left = _left_rotation(brother);
-								grandparent->left->parent = grandparent;
-							}
-						}
-					}*/
 			}
 			_size--;
 			return (1); // return the number of erased nodes
-
 		}
-		// todo !!!!!!!!!
 		void erase (iterator first, iterator last)
 		{
+			// todo: check if using std::vector is ok or do it differently
 			std::vector<value_type> elements_to_be_deleted;
 			for (; first != last; ++first) {
 				elements_to_be_deleted.push_back(*first);
@@ -660,7 +671,6 @@ namespace ft
 			for (; it != elements_to_be_deleted.end(); ++it) {
 				erase(it->first);
 			}
-
 		}
 		void swap (map& x)
 		{
@@ -671,8 +681,8 @@ namespace ft
 			std::swap(this->_compare, x._compare);
 			std::swap(this->_alloc, x._alloc);
 			std::swap(this->_size, x._size);
-		} // test
-		void clear() // test
+		}
+		void clear()
 		{
 			_delete_tree(*_root);
 			_root = _leaf;
@@ -684,6 +694,7 @@ namespace ft
 		{
 			return (_compare);
 		}
+		// todo
 //		value_compare value_comp() const;
 
 //		operations
@@ -1010,7 +1021,7 @@ namespace ft
 			direction = _compare(val, parent->val.first);
 			if (direction == _compare(parent->val.first, val)) // key already exist - key
 				return (ft::make_pair(parent, false));
-			while ((!_is_end(*tmp_l) || direction == false) && (!_is_end(*tmp_r) || direction == true))
+			while ((!_is_end(*tmp_l) || !direction) && (!_is_end(*tmp_r) || direction))
 			{
 				parent = direction ? tmp_l : tmp_r;
 				tmp_l = parent->left;
@@ -1048,7 +1059,6 @@ namespace ft
 			}
 			_check_wiki_case_3(new_child, parent, brother, direction);
 		}
-
 		void _check_wiki_case_3(t_node* new_child, t_node* parent, t_node* brother, bool direction) // wiki case 3
 		{
 			// wiki case 3: parent, sibling and his kids are black
@@ -1057,15 +1067,10 @@ namespace ft
 					brother->color = RED;
 					new_child = parent;
 					_erase_balance(new_child);
-//					parent = new_child->parent;
-//					direction = (new_child == parent->right) ? RIGHT : LEFT;
-//					brother = (direction == RIGHT) ? parent->left : parent->right;
-//					_check_wiki_case_2(new_child, parent, brother, direction);
 				}
 			}
 			_check_wiki_case_4(parent, brother, direction);
 		}
-
 		void _check_wiki_case_4(t_node* parent, t_node* brother, bool direction) // wiki 4
 		{
 			// wiki case 4: parent is red, but sibling and his kids are black
@@ -1078,7 +1083,6 @@ namespace ft
 				_check_wiki_case_5(parent, brother, direction);
 			}
 		}
-
 		void _check_wiki_case_5(t_node* parent, t_node* brother, bool direction) {
 			// wiki case 5: sibling is black, left child is red, right child is black and new_child direction is left
 			if (brother->color == BLACK && brother->left->color == RED && brother->right->color == BLACK && direction == LEFT) {
@@ -1123,7 +1127,6 @@ namespace ft
 			}
 			_check_wiki_case_6(parent, brother, direction);
 		}
-
 		void _check_wiki_case_6(t_node* parent, t_node* brother, bool direction) {
 			// wiki case 6: sibling is black
 			if (brother->color == BLACK) {

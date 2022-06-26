@@ -52,7 +52,7 @@ int main()
 	std::cout << std::endl << "----------&----------" << std::endl;
 
 //	ft::map<int, int>::iterator td = second.find(10);
-	second.erase(9);
+	second.erase(51);
 
 	second.print_tree();
 	std::cout << std::endl;
