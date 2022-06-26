@@ -217,7 +217,7 @@ namespace ft
 
 	private:
 		// todo
-		class value_compare
+		class _value_compare
 		{
 
 		};
@@ -228,7 +228,7 @@ namespace ft
 		typedef Alloc allocator_type;
 		typedef typename allocator_type::value_type value_type;
 		typedef Compare key_compare;
-		typedef typename value_type::value_compare value_compare;
+		typedef _value_compare value_compare;
 
 		typedef typename allocator_type::reference reference;
 		typedef typename allocator_type::const_reference const_reference;
