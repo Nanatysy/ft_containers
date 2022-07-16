@@ -15,7 +15,7 @@
 #include "iterator.hpp"
 #include <queue>
 
-// TODO: insert(when tree is empty) - doesn't work, reverse_iterator, value_comp, cbegin, cend, lower_bound, upper_bound (with const iterator)
+// TODO: insert(when tree is empty) - doesn't work, reverse_iterator, cbegin, cend, lower_bound, upper_bound (with const iterator)
 
 namespace ft
 {
@@ -215,20 +215,12 @@ namespace ft
 			const map<Key, T>	*_tree;
 		};
 
-	private:
-		// todo
-		class _value_compare
-		{
-
-		};
-
 	public:
 		typedef Key key_type;
 		typedef T mapped_type;
 		typedef Alloc allocator_type;
 		typedef typename allocator_type::value_type value_type;
 		typedef Compare key_compare;
-		typedef _value_compare value_compare;
 
 		typedef typename allocator_type::reference reference;
 		typedef typename allocator_type::const_reference const_reference;
@@ -249,11 +241,25 @@ namespace ft
 			value_type		val;
 		}				t_node;
 
+	private:
+		class _value_compare : public  std::binary_function<value_type,value_type,bool>
+		{
+		protected:
+			key_compare comp;
+			_value_compare (key_compare c) : comp(c) {}
+		public:
+			bool operator() (const value_type& x, const value_type& y) const
+			{
+				return comp(x.first, y.first);
+			}
+		};
+
 	public:
 		typedef _map_iterator<t_node *> iterator;
 		typedef _map_iterator<const t_node *> const_iterator;
 		typedef typename ft::_reverse_iterator<iterator> reverse_iterator;
 		typedef typename ft::_reverse_iterator<const_iterator> const_reverse_iterator;
+		typedef _value_compare value_compare;
 
 
 		explicit map (const key_compare& comp = key_compare(),
@@ -694,8 +700,10 @@ namespace ft
 		{
 			return (_compare);
 		}
-		// todo
-//		value_compare value_comp() const;
+		value_compare value_comp() const
+		{
+			return _value_compare(_compare);
+		}
 
 //		operations
 		iterator find (const key_type& k)
@@ -818,6 +826,7 @@ namespace ft
 		{
 			return (_alloc);
 		}
+
 
 
 		void	print_tree() const
