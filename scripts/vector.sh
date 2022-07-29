@@ -8,7 +8,7 @@ clean () {
   rm -rf ft_vector.txt std_vector.txt
 }
 
-cd cmake-build-debug
+cd ../cmake-build-debug
 ./ft_container_vector > ft_vector.txt
 ./std_container_vector > std_vector.txt
 

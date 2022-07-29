@@ -8,7 +8,7 @@ clean () {
   rm -rf ft_stack.txt std_stack.txt
 }
 
-cd cmake-build-debug
+cd ../cmake-build-debug
 ./ft_container_stack > ft_stack.txt
 ./std_container_stack > std_stack.txt
 

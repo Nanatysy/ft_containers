@@ -8,7 +8,7 @@ clean () {
   rm -rf ft_set.txt std_set.txt
 }
 
-cd cmake-build-debug
+cd ../cmake-build-debug
 ./ft_container_set > ft_set.txt
 ./std_container_set > std_set.txt
 

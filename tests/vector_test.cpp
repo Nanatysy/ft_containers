@@ -9,22 +9,6 @@
 #define CIAN "\x1b[36m"
 #define BLANK "\x1b[0m"
 
-// todo
-//  3 types of constructor
-//  operator =
-//  size
-//  max_size
-//  resize
-//  capacity
-//  reserve
-//  operator[]
-//  at
-//  assign
-//  insert
-//  erase
-//  swap
-//  clear
-
 int main()
 {
 	{
@@ -131,6 +115,140 @@ int main()
 		((foo>bar) == (fo>ba)) ? std::cout << "true >" << std::endl : std::cout << "false >" << std::endl;
 		((foo>=bar) == (fo>=ba)) ? std::cout << "true >=" << std::endl : std::cout << "false >=" << std::endl;
 	}
+
+    {
+        std::cout << "----------------------------------" << std::endl;
+
+        ft::vector<std::string> first;
+        ft::vector<std::string> second(5, "hi");
+        ft::vector<std::string> third(second.begin(), second.end());
+
+        std::cout << "First: ";
+        for (ft::vector<std::string>::const_iterator it = first.begin(); it != first.end(); ++it) {
+            std::cout << *it << " ";
+        }
+        std::cout << std::endl;
+        std::cout << "Second: ";
+        for (ft::vector<std::string>::const_iterator it = second.begin(); it != second.end(); ++it) {
+            std::cout << *it << " ";
+        }
+        std::cout << std::endl;
+        std::cout << "Third: ";
+        for (ft::vector<std::string>::const_iterator it = third.begin(); it != third.end(); ++it) {
+            std::cout << *it << " ";
+        }
+        std::cout << std::endl;
+        {
+            std::cout << "Fourth: ";
+            ft::vector<std::string> fourth(second);
+            for (ft::vector<std::string>::const_iterator it = fourth.begin(); it != fourth.end(); ++it) {
+                std::cout << *it << " ";
+            }
+            std::cout << std::endl;
+        }
+        {
+            std::cout << "Fifth: ";
+            ft::vector<std::string> fifth = second;
+            for (ft::vector<std::string>::const_iterator it = fifth.begin(); it != fifth.end(); ++it) {
+                std::cout << *it << " ";
+            }
+            std::cout << std::endl;
+        }
+        std::cout << "second size: " << second.size() << std::endl;
+
+        std::cout << "second max_size: " << second.max_size() << std::endl;
+
+        first.resize(2, "hello");
+
+        std::cout << first.size() << ", first after resize : ";
+        for (ft::vector<std::string>::const_iterator it = first.begin(); it != first.end(); ++it) {
+            std::cout << *it << " ";
+        }
+        std::cout << std::endl;
+
+        std::cout << "first capacity: " << first.capacity() << std::endl;
+
+        first.reserve(10);
+        std::cout << "first capacity after reserve: " << first.capacity() << std::endl;
+
+        first[1] = "peer";
+        std::cout << first.size() << ", first after operator[] : ";
+        for (ft::vector<std::string>::const_iterator it = first.begin(); it != first.end(); ++it) {
+            std::cout << *it << " ";
+        }
+        std::cout << std::endl;
+
+        try {
+            std::cout << first.at(5) << " - element at 5th position" <<std::endl;
+        }
+        catch (std::exception& e) {
+            std::cout << "Expected exception: " << e.what() << std::endl;
+        }
+
+        first.swap(second);
+        std::cout << "First after swap with second, size " << first.size() << " : ";
+        for (ft::vector<std::string>::const_iterator it = first.begin(); it != first.end(); ++it) {
+            std::cout << *it << " ";
+        }
+        std::cout << std::endl;
+        std::cout << "Second after swap with first, size " << second.size() << " : ";
+        for (ft::vector<std::string>::const_iterator it = second.begin(); it != second.end(); ++it) {
+            std::cout << *it << " ";
+        }
+        std::cout << std::endl;
+
+        first.clear();
+        std::cout << "first size after clear method: " << first.size() << std::endl;
+        std::cout << ((first.empty()) ? "empty" : "not empty") << std::endl;
+
+        first.insert(first.begin(), "hello");
+        std::cout << "First after first insert, size " << first.size() << " : ";
+        for (ft::vector<std::string>::const_iterator it = first.begin(); it != first.end(); ++it) {
+            std::cout << *it << " ";
+        }
+        std::cout << std::endl;
+
+        first.insert(first.begin(), 3, ".");
+        std::cout << "First after second insert, size " << first.size() << " : ";
+        for (ft::vector<std::string>::const_iterator it = first.begin(); it != first.end(); ++it) {
+            std::cout << *it << " ";
+        }
+        std::cout << std::endl;
+
+        first.insert(first.end() - 1, second.begin(), second.end());
+        std::cout << "First after third insert, size " << first.size() << " : ";
+        for (ft::vector<std::string>::const_iterator it = first.begin(); it != first.end(); ++it) {
+            std::cout << *it << " ";
+        }
+        std::cout << std::endl;
+
+        first.erase(first.end() - 1);
+        std::cout << "First after erase of last element, size " << first.size() << " : ";
+        for (ft::vector<std::string>::const_iterator it = first.begin(); it != first.end(); ++it) {
+            std::cout << *it << " ";
+        }
+        std::cout << std::endl;
+
+        first.erase(first.begin() + 1, first.end());
+        std::cout << "First after erase of all elems beside first, size " << first.size() << " : ";
+        for (ft::vector<std::string>::const_iterator it = first.begin(); it != first.end(); ++it) {
+            std::cout << *it << " ";
+        }
+        std::cout << std::endl;
+
+        first.assign(3, ")");
+        std::cout << "First after assign, size " << first.size() << " : ";
+        for (ft::vector<std::string>::const_iterator it = first.begin(); it != first.end(); ++it) {
+            std::cout << *it << " ";
+        }
+        std::cout << std::endl;
+        first.assign(third.begin(), third.end());
+        std::cout << "First after second assign, size " << first.size() << " : ";
+        for (ft::vector<std::string>::const_iterator it = first.begin(); it != first.end(); ++it) {
+            std::cout << *it << " ";
+        }
+        std::cout << std::endl;
+    }
 
 	return (0);
 }
