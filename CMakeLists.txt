@@ -5,8 +5,6 @@ set(CMAKE_CXX_STANDARD 98)
 
 set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -std=c++98")
 
-enable_testing()
-find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIR})
 
 include_directories(.)
@@ -55,8 +53,18 @@ add_executable(range.cpp
         range.cpp
         )
 
-add_executable(gtest
-        my_tests/vtest.cpp)
+add_executable(new_vector_test
+        vector.hpp
+        pair.hpp
+        enable_if.hpp
+        iterator.hpp
+        compare.hpp
+        vector_test.cpp
+        )
 
-target_link_libraries(gtest
-        gtest_main)
+add_executable(set_test
+        set.hpp
+        map.hpp
+        pair.hpp
+        enable_if.hpp
+        set_test.cpp)

@@ -13,9 +13,10 @@
 #include "pair.hpp"
 #include "enable_if.hpp"
 #include "iterator.hpp"
+#include "vector.hpp"
 #include <queue>
 
-// TODO: insert(when tree is empty) - doesn't work, reverse_iterator, cbegin, cend, lower_bound, upper_bound (with const iterator)
+// TODO: reverse_iterator, cbegin, cend, lower_bound, upper_bound (with const iterator), const iterator
 
 namespace ft
 {
@@ -24,10 +25,32 @@ namespace ft
 			std::allocator<ft::pair<const Key,T> > >
 	class map
 	{
+	public:
+		typedef Key key_type;
+		typedef T mapped_type;
+		typedef Alloc allocator_type;
+		typedef typename allocator_type::value_type value_type;
+		typedef Compare key_compare;
+
 	private:
+		typedef struct	s_node
+		{
+			typedef value_type value;
+
+			struct s_node	*left;
+			struct s_node	*right;
+			struct s_node	*parent;
+			int				color;
+			value_type		val;
+		}				t_node;
+
+	private:
+		class _map_const_iterator;
+
 		template <class Iter>
 		class _map_iterator
 		{
+			friend class _map_const_iterator;
 		public:
 			typedef Iter iterator_type;
 			typedef typename ft::iterator_traits<Iter>::iterator_category iterator_category;
@@ -42,6 +65,10 @@ namespace ft
 			{
 				*this = src;
 			}
+//			_map_iterator(_map_iterator<t_node *> iterator) {
+//				_ptr = iterator._ptr;
+//				_tree = iterator._tree;
+//			}
 
 			_map_iterator &operator=(const _map_iterator & src)
 			{
@@ -143,6 +170,123 @@ namespace ft
 		};
 
 		template <class Iter>
+		class _map_const_iterator
+		{
+		public:
+			typedef Iter iterator_type;
+			typedef typename ft::iterator_traits<Iter>::iterator_category iterator_category;
+			typedef typename ft::iterator_traits<Iter>::value_type::value value_type;
+			typedef typename ft::iterator_traits<Iter>::difference_type difference_type;
+			typedef typename ft::iterator_traits<Iter>::pointer pointer;
+			typedef typename ft::iterator_traits<Iter>::reference reference;
+
+			_map_const_iterator() : _ptr(nullptr), _tree(nullptr) {}
+			explicit _map_const_iterator(Iter data, const map<Key, T> *x) : _ptr(data), _tree(x) {}
+			_map_const_iterator(const _map_const_iterator & src)
+			{
+				*this = src;
+			}
+
+			_map_const_iterator &operator=(const _map_const_iterator & src)
+			{
+				if (this == &src)
+					return (*this);
+
+				_ptr = src._ptr;
+				_tree = src._tree;
+				return (*this);
+			}
+
+			bool operator==(const _map_const_iterator & src)
+			{
+				return (this->_ptr == src._ptr);
+			}
+			bool operator!=(const _map_const_iterator & src)
+			{
+				return (this->_ptr != src._ptr);
+			}
+
+			_map_const_iterator<Iter> &operator++()
+			{
+				pointer parent;
+
+				if (_ptr == _tree->_end)
+					return (*this);
+				if (_ptr->right == _tree->_leaf || _ptr->right == _tree->_begin)
+				{
+					parent = _ptr->parent;
+					while (parent && parent->right == _ptr)
+					{
+						_ptr = parent;
+						parent = parent->parent;
+					}
+					_ptr = parent;
+				}
+				else
+				{
+					_ptr = _ptr->right;
+					while (_ptr != _tree->_end && _ptr->left != _tree->_leaf)
+						_ptr = _ptr->left;
+				}
+				return (*this);
+			}
+
+			_map_const_iterator<Iter> operator++(int)
+			{
+				_map_const_iterator<Iter> tmp(*this);
+
+				++(*this);
+				return (tmp);
+			}
+
+			_map_const_iterator<Iter> &operator--()
+			{
+				pointer parent;
+
+				if (_ptr == _tree->_end)
+					return (*this);
+				if (_ptr->left == _tree->_leaf || _ptr->left == _tree->_enf)
+				{
+					parent = _ptr->parent;
+					while (parent && parent->left == _ptr)
+					{
+						_ptr = parent;
+						parent = parent->parent;
+					}
+					_ptr = parent;
+				}
+				else
+				{
+					_ptr = _ptr->left;
+					while (_ptr != _tree->_begin && _ptr->left != _tree->_leaf)
+						_ptr = _ptr->left;
+				}
+				return (*this);
+			}
+
+			_map_const_iterator<Iter> operator--(int)
+			{
+				_map_const_iterator<Iter> tmp(*this);
+
+				--(*this);
+				return (tmp);
+			}
+
+			value_type &operator*() const
+			{
+				return (_ptr->val);
+			}
+			value_type *operator->() const
+			{
+				return (&_ptr->val);
+			}
+
+		private:
+			iterator_type		_ptr;
+			const map<Key, T>	*_tree;
+		};
+
+		template <class Iter>
 		class _map_reverse_iterator {
 		public:
 			typedef Iter iterator_type;
@@ -216,30 +360,12 @@ namespace ft
 		};
 
 	public:
-		typedef Key key_type;
-		typedef T mapped_type;
-		typedef Alloc allocator_type;
-		typedef typename allocator_type::value_type value_type;
-		typedef Compare key_compare;
-
 		typedef typename allocator_type::reference reference;
 		typedef typename allocator_type::const_reference const_reference;
 		typedef typename allocator_type::pointer pointer;
 		typedef typename allocator_type::const_pointer const_pointer;
 		typedef typename std::ptrdiff_t difference_type;
 		typedef size_t size_type;
-
-	private:
-		typedef struct	s_node
-		{
-			typedef value_type value;
-
-			struct s_node	*left;
-			struct s_node	*right;
-			struct s_node	*parent;
-			int				color;
-			value_type		val;
-		}				t_node;
 
 	private:
 		class _value_compare : public  std::binary_function<value_type,value_type,bool>
@@ -384,24 +510,9 @@ namespace ft
 //		Element access
 		mapped_type& operator[] (const key_type& k)
 		{
-			t_node	*tmp;
-			t_node	*parent;
-
-			tmp = _root;
-			parent = _root->parent;
-			while (!_is_end(*tmp))
-			{
-				if (_compare(k, tmp->val.first))
-					tmp = tmp->left;
-				else
-				{
-					if (!_compare(tmp->val.first, k))
-						return (tmp->val.second);
-					tmp = tmp->right;
-				}
-				parent = tmp->parent;
-			}
-			 return (insert (parent, k));
+			pair<iterator,bool> insert_result = insert(ft::make_pair(k, mapped_type()));
+			iterator it = insert_result.first;
+			return (it->second);
 		}
 
 //		modifiers
@@ -417,16 +528,21 @@ namespace ft
 
 			t_node *new_elem = _new_node(val);
 
+			if (this->empty()) {
+				_root = _case_root(new_elem);
+				_size++;
+				return ft::make_pair(iterator(_root, this), true);
+			}
+
 			// search for insertion place, somehow check if key already exist
 			pos = _find_position_for_new_node(new_elem->val.first);
 			parent = pos.first;
 			direction = pos.second;
-			if (parent == _leaf)
-				_root = _case_root(new_elem);
-			else if (!direction && _compare(pos.first->val.first, new_elem->val.first) == false)
+			if (!direction && _compare(pos.first->val.first, new_elem->val.first) == false)
 			{
 				_delete_tree(new_elem);
-				return (pos); // already exist
+				pair<iterator,bool> res = ft::make_pair(iterator(pos.first, this), pos.second);
+				return (res); // already exist
 			}
 			child = (direction) ? parent->left : parent->right;
 			pos.first = child;
@@ -446,6 +562,7 @@ namespace ft
 			direction ? parent->left = new_elem : parent->right = new_elem;
 			new_elem->parent = parent;
 			child = new_elem;
+			t_node* new_pos = child;
 
 			//check if tree isn't balanced
 			while (parent->color == RED && child->color == RED)
@@ -488,7 +605,8 @@ namespace ft
 				parent = child->parent;
 			}
 			_size++;
-			return (pos);
+			pair<iterator,bool> res = ft::make_pair(iterator(new_pos, this), pos.second);
+			return (res);
 		}
 		iterator insert (iterator position, const value_type& val)
 		{
@@ -510,15 +628,21 @@ namespace ft
 			{
 				t_node *new_elem = _new_node(*first);
 
+				if (this->empty()) {
+					_root = _case_root(new_elem);
+					_size++;
+					first++;
+					continue;
+				}
+
 				// search for insertion place, somehow check if key already exist
 				pos = _find_position_for_new_node(new_elem->val.first);
 				parent = pos.first;
 				direction = pos.second;
-				if (parent == _leaf)
-					_root = _case_root(new_elem);
-				else if (direction == false && _compare(pos.first->val.first, new_elem->val.first) == false)
+				if (direction == false && _compare(pos.first->val.first, new_elem->val.first) == false)
 				{
 					_delete_tree(new_elem);
+					first++;
 					continue ; // already exist
 				}
 				child = (direction) ? parent->left : parent->right;
@@ -668,12 +792,11 @@ namespace ft
 		}
 		void erase (iterator first, iterator last)
 		{
-			// todo: check if using std::vector is ok or do it differently
-			std::vector<value_type> elements_to_be_deleted;
+			ft::vector<value_type> elements_to_be_deleted;
 			for (; first != last; ++first) {
 				elements_to_be_deleted.push_back(*first);
 			}
-			typename std::vector<value_type>::const_iterator it = elements_to_be_deleted.begin();
+			typename ft::vector<value_type>::const_iterator it = elements_to_be_deleted.begin();
 			for (; it != elements_to_be_deleted.end(); ++it) {
 				erase(it->first);
 			}

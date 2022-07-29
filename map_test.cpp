@@ -85,5 +85,30 @@ int main()
 //	std::map
 //	ft::map<int, int> second(first);
 //	second.print_tree();
+
+	{
+		ft::map<char,int> mymap;
+		ft::map<char,int>::const_iterator itlow,itup;
+
+		mymap['a']=20;
+		mymap['b']=40;
+		mymap['c']=60;
+		mymap['d']=80;
+		mymap['e']=100;
+
+		for (ft::map<char,int>::iterator f = mymap.begin(); f != mymap.end(); ++f) {
+			std::cout << f->first << "-" << f->second << " ";
+		}
+		std::cout << std::endl;
+
+		itlow=mymap.lower_bound ('b');  // itlow points to b
+		itup=mymap.upper_bound ('d');   // itup points to e (not d!)
+
+//		mymap.erase(itlow,itup);        // erases [itlow,itup)
+
+		// print content:
+		for (ft::map<char,int>::const_iterator itm=mymap.begin(); itm!=mymap.end(); ++itm)
+			std::cout << " => "  << '\n';
+	}
 	return (0);
 }
