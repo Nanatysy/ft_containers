@@ -1,0 +1,186 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.20"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "ft_containers",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ft_container_map::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ft_container_map-Debug-ea39236a0325f8494db3.json",
+					"name" : "ft_container_map",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ft_container_set::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ft_container_set-Debug-869e430d1c42b8ea8f3d.json",
+					"name" : "ft_container_set",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ft_container_stack::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ft_container_stack-Debug-7ef575e48f0566772c3d.json",
+					"name" : "ft_container_stack",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ft_container_vector::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ft_container_vector-Debug-e0431b3201f3ec8d59c4.json",
+					"name" : "ft_container_vector",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ft_containers_vector::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ft_containers_vector-Debug-cc24cce1c07da73fdd86.json",
+					"name" : "ft_containers_vector",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ft_pair::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ft_pair-Debug-681f3f61e7ffe9109db7.json",
+					"name" : "ft_pair",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "iterator::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-iterator-Debug-58b1fb8a32bd1d412817.json",
+					"name" : "iterator",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "new_vector_test::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-new_vector_test-Debug-12cc2714fb2b9101036a.json",
+					"name" : "new_vector_test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "range.cpp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-range.cpp-Debug-c23b2aeab1c0b027effc.json",
+					"name" : "range.cpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "set_test::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-set_test-Debug-109c1a63830a0178b191.json",
+					"name" : "set_test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "std_container_map::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-std_container_map-Debug-e44f246d41466f6157e1.json",
+					"name" : "std_container_map",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "std_container_set::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-std_container_set-Debug-d6a288603030566067a7.json",
+					"name" : "std_container_set",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "std_container_stack::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-std_container_stack-Debug-6f11bb02cdc9dfbccc23.json",
+					"name" : "std_container_stack",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "std_container_vector::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-std_container_vector-Debug-a52c726fc93e5eee8786.json",
+					"name" : "std_container_vector",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "vector_test::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-vector_test-Debug-66d62fa1c4422ebf9579.json",
+					"name" : "vector_test",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/Users/dwillett/Desktop/ft_containers/cmake-build-debug",
+		"source" : "/Users/dwillett/Desktop/ft_containers"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

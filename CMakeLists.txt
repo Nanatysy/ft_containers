@@ -18,18 +18,11 @@ add_executable(ft_containers_vector
         my_print.hpp
         compare.hpp)
 
-add_executable(ft_container_stack
-        stack_test.cpp
-        stack.hpp
-        enable_if.hpp
-        my_print.hpp
-        )
-
-add_executable(ft_container_map
-        map.hpp
-        enable_if.hpp
-        pair.hpp
-        map_test.cpp)
+#add_executable(ft_container_map
+#        map.hpp
+#        enable_if.hpp
+#        pair.hpp
+#        map_test.cpp)
 
 add_executable(ft_pair
         pair_tmp.cpp
@@ -59,7 +52,7 @@ add_executable(new_vector_test
         enable_if.hpp
         iterator.hpp
         compare.hpp
-        vector_test.cpp
+        tests/vector_test.cpp
         )
 
 add_executable(set_test
@@ -67,4 +60,60 @@ add_executable(set_test
         map.hpp
         pair.hpp
         enable_if.hpp
-        set_test.cpp)
+        tests/set_test.cpp)
+
+add_executable(ft_container_stack
+        tests/stack_test.cpp
+        stack.hpp
+        enable_if.hpp
+        my_print.hpp)
+
+add_executable(std_container_stack
+        tests/std_stack_test.cpp
+        stack.hpp
+        enable_if.hpp
+        my_print.hpp)
+
+add_executable(ft_container_vector
+        tests/vector_test.cpp
+        vector.hpp
+        enable_if.hpp
+        iterator.hpp)
+
+add_executable(std_container_vector
+        tests/std_vector_test.cpp
+        vector.hpp
+        enable_if.hpp
+        iterator.hpp)
+
+add_executable(ft_container_map
+        map.hpp
+        enable_if.hpp
+        pair.hpp
+        compare.hpp
+        tests/map_test.cpp)
+
+add_executable(std_container_map
+        map.hpp
+        enable_if.hpp
+        pair.hpp
+        compare.hpp
+        tests/std_map_test.cpp)
+
+add_executable(ft_container_set
+        set.hpp
+        enable_if.hpp
+        pair.hpp
+        compare.hpp
+        map.hpp
+        tests/set_test.cpp
+        )
+
+add_executable(std_container_set
+        set.hpp
+        enable_if.hpp
+        pair.hpp
+        compare.hpp
+        map.hpp
+        tests/std_set_test.cpp
+        )
