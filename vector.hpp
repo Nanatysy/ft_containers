@@ -10,8 +10,6 @@
 # include "enable_if.hpp"
 # include "compare.hpp"
 
-//TODO: unit tests, const reverse iterator
-
 namespace ft {
 
 	template < class T, class Alloc = std::allocator<T> >

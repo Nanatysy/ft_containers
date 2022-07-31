@@ -166,7 +166,7 @@ int main()
         }
         std::cout << std::endl;
 
-        std::cout << "first capacity: " << first.capacity() << std::endl;
+//        std::cout << "first capacity: " << first.capacity() << std::endl;
 
         first.reserve(10);
         std::cout << "first capacity after reserve: " << first.capacity() << std::endl;
@@ -182,7 +182,7 @@ int main()
             std::cout << first.at(5) << " - element at 5th position" <<std::endl;
         }
         catch (std::exception& e) {
-            std::cout << "Expected exception: " << e.what() << std::endl;
+            std::cout << "Expected exception" << std::endl;
         }
 
         first.swap(second);
@@ -249,6 +249,62 @@ int main()
         }
         std::cout << std::endl;
     }
+
+	{
+		ft::vector<int> first(3, 5);
+		ft::vector<int> second(first.begin(), first.end());
+		ft::vector<int> third;
+		for (int i = 0; i < 5; ++i) {
+			third.push_back(i + 1);
+		}
+
+		std::cout << "First: ";
+		for (ft::vector<int>::const_iterator it = first.begin(); it != first.end(); ++it) {
+			std::cout << *it << " ";
+		}
+		std::cout << std::endl;
+		std::cout << "Second: ";
+		for (ft::vector<int>::const_iterator it = second.begin(); it != second.end(); ++it) {
+			std::cout << *it << " ";
+		}
+		std::cout << std::endl;
+		std::cout << "Third: ";
+		for (ft::vector<int>::const_iterator it = third.begin(); it != third.end(); ++it) {
+			std::cout << *it << " ";
+		}
+		std::cout << std::endl;
+
+		std::cout << "Third vector output using const reverse iterator: ";
+		for (ft::vector<int>::const_reverse_iterator it = third.rbegin(); it != third.rend(); ++it) {
+			std::cout << *it << " ";
+		}
+		std::cout << std::endl;
+
+		ft::vector<int>::iterator middle = std::find(third.begin(), third.end(), 3);
+		if (middle != first.end()) {
+			third.insert(middle, third.begin(), third.end());
+			std::cout << "Third after inserting third in the middle: ";
+			for (ft::vector<int>::iterator it = third.begin(); it != third.end(); ++it) {
+				std::cout << *it << " ";
+			}
+			std::cout << std::endl;
+		}
+		else {
+			std::cout << "failed to find middle element" << std::endl;
+		}
+
+		middle = std::find(third.begin(), third.end(), 3);
+		if (middle == first.end()) {
+			std::cout << "failed to find middle element" << std::endl;
+		}
+		else {
+			std::cout << *middle-- << " " << *middle << " " << *(--middle) << std::endl;
+			middle += 2;
+			std::cout << *middle++ << " " << *middle << " " << *(++middle) << std::endl;
+			std::cout << *(middle - 1) << std::endl;
+		}
+
+	}
 
 	return (0);
 }

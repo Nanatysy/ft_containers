@@ -31,14 +31,14 @@ add_executable(ft_pair
 add_executable(iterator
         test.cpp)
 
-add_executable(vector_test
-        Test/tests.cpp
-        Test/test_color.hpp
-        vector.hpp
-        enable_if.hpp
-        compare.hpp
-        iterator.hpp
-        )
+#add_executable(vector_test
+#        Test/tests.cpp
+#        Test/test_color.hpp
+#        vector.hpp
+#        enable_if.hpp
+#        compare.hpp
+#        iterator.hpp
+#        )
 
 add_executable(range.cpp
         map.hpp

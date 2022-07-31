@@ -5,8 +5,6 @@
 #ifndef FT_CONTAINERS_ITERATOR_HPP
 #define FT_CONTAINERS_ITERATOR_HPP
 
-//TODO: const_reverse_iterator (no constructor)
-
 namespace ft {
 
 	template< class Iter >

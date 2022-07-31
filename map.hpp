@@ -45,12 +45,15 @@ namespace ft
 		}				t_node;
 
 	private:
+		template <class Iter>
 		class _map_const_iterator;
+
 
 		template <class Iter>
 		class _map_iterator
 		{
-			friend class _map_const_iterator;
+		friend class _map_const_iterator<Iter>;
+
 		public:
 			typedef Iter iterator_type;
 			typedef typename ft::iterator_traits<Iter>::iterator_category iterator_category;
@@ -186,12 +189,22 @@ namespace ft
 			{
 				*this = src;
 			}
+			_map_const_iterator(const _map_iterator<Iter>& src) {
+				_ptr = src._ptr;
+				_tree = src._tree;
+			}
 
 			_map_const_iterator &operator=(const _map_const_iterator & src)
 			{
 				if (this == &src)
 					return (*this);
 
+				_ptr = src._ptr;
+				_tree = src._tree;
+				return (*this);
+			}
+
+			_map_const_iterator &operator=(const _map_iterator<Iter> & src) {
 				_ptr = src._ptr;
 				_tree = src._tree;
 				return (*this);
@@ -382,7 +395,7 @@ namespace ft
 
 	public:
 		typedef _map_iterator<t_node *> iterator;
-		typedef _map_iterator<const t_node *> const_iterator;
+		typedef _map_const_iterator<const t_node *> const_iterator;
 		typedef typename ft::_reverse_iterator<iterator> reverse_iterator;
 		typedef typename ft::_reverse_iterator<const_iterator> const_reverse_iterator;
 		typedef _value_compare value_compare;
@@ -726,7 +739,6 @@ namespace ft
 			if (pos.second == true || (pos.second == false && pos.first->val.first != k)) // key doesn't exist
 				return (0);
 
-			// TODO: check if _root = to_be_removed
 			to_be_removed = pos.first;
 			if (!_is_end(*to_be_removed->left) && !_is_end(*to_be_removed->right)) // two children
 			{
