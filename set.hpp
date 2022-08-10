@@ -564,7 +564,7 @@ namespace ft
 		}
 		void erase (iterator position)
 		{
-			key_type key = (*position)->first;
+			key_type key = *position;
 			erase(key);
 		}
 		size_type erase (const key_type& k)
@@ -653,7 +653,7 @@ namespace ft
 			}
 			typename ft::vector<value_type>::const_iterator it = elements_to_be_deleted.begin();
 			for (; it != elements_to_be_deleted.end(); ++it) {
-				erase(it->first);
+				erase(*it);
 			}
 		}
 		void swap (set& x)
@@ -668,7 +668,7 @@ namespace ft
 		}
 		void clear()
 		{
-			_delete_tree(*_root);
+			_delete_tree(_root);
 			_root = _leaf;
 			_size = 0;
 		}
@@ -745,7 +745,7 @@ namespace ft
 
 			while (it != ite)
 			{
-				if (!_compare(it->first, k))
+				if (!_compare(*it, k))
 					break;
 				++it;
 			}
@@ -758,7 +758,7 @@ namespace ft
 
 			while (it != ite)
 			{
-				if (!_compare(it->first, k))
+				if (!_compare(*it, k))
 					break;
 				++it;
 			}
@@ -771,7 +771,7 @@ namespace ft
 
 			while (it != ite)
 			{
-				if (_compare(k, it->first))
+				if (_compare(k, *it))
 					break;
 				++it;
 			}
@@ -784,7 +784,7 @@ namespace ft
 
 			while (it != ite)
 			{
-				if (_compare(k, it->first))
+				if (_compare(k, *it))
 					break;
 				++it;
 			}
@@ -1222,6 +1222,43 @@ namespace ft
 		t_node			*_begin;
 		t_node			*_end;
 	};
+
+	template <class T, class Compare, class Alloc>
+	bool operator== ( const set<T,Compare,Alloc>& lhs, const set<T,Compare,Alloc>& rhs )
+	{
+		return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
+	}
+	template <class T, class Compare, class Alloc>
+	bool operator!= ( const set<T,Compare,Alloc>& lhs, const set<T,Compare,Alloc>& rhs )
+	{
+		return (!(lhs==rhs));
+	}
+	template <class T, class Compare, class Alloc>
+	bool operator<  ( const set<T,Compare,Alloc>& lhs, const set<T,Compare,Alloc>& rhs )
+	{
+		return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+	}
+	template <class T, class Compare, class Alloc>
+	bool operator<= ( const set<T,Compare,Alloc>& lhs, const set<T,Compare,Alloc>& rhs )
+	{
+		return (lhs < rhs || lhs == rhs);
+	}
+	template <class T, class Compare, class Alloc>
+	bool operator>  ( const set<T,Compare,Alloc>& lhs,  const set<T,Compare,Alloc>& rhs )
+	{
+		return (rhs < lhs);
+	}
+	template <class T, class Compare, class Alloc>
+	bool operator>= ( const set<T,Compare,Alloc>& lhs, const set<T,Compare,Alloc>& rhs )
+	{
+		return (rhs <= lhs);
+	}
+
+	template <class T, class Compare, class Alloc>
+	void swap (set<T,Compare,Alloc>& x, set<T,Compare,Alloc>& y)
+	{
+		x.swap(y);
+	}
 }
 
 #endif //FT_CONTAINERS_SET_HPP
