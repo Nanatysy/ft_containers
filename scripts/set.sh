@@ -14,7 +14,6 @@ cd ..
 
 clean
 
-cp set_test.cpp std_set_test.cpp
 sed 's/ft::/std::/g' set_test.cpp > std_set_test_tmp.cpp
 sed 's/#include "set.hpp"/#include <set>/g' std_set_test_tmp.cpp > std_set_test.cpp
 rm -rf std_set_test_tmp.cpp

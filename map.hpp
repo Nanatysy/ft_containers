@@ -14,7 +14,6 @@
 #include "enable_if.hpp"
 #include "iterator.hpp"
 #include "vector.hpp"
-#include <queue>
 
 namespace ft
 {
@@ -958,13 +957,6 @@ namespace ft
 			return (_alloc);
 		}
 
-
-	private:
-		void	print_tree() const
-		{
-			print2DUtil(_root, 0);
-		}
-
 	private:
 		t_node *_new_node()
 		{
@@ -1326,45 +1318,6 @@ namespace ft
 			direction = (new_child == parent->right) ? RIGHT : LEFT;
 			brother = (direction == RIGHT) ? parent->left : parent->right;
 			_check_wiki_case_2(new_child, parent, brother, direction);
-		}
-
-		#define COUNT 5
-		void print2DUtil(t_node *root, int space) const
-		{
-			// Base case
-			if (root == _leaf || root == _begin || root == _end)
-			{
-				for (int i = 0; i < space; i++)
-					std::cout<<" ";
-				if (root == _begin)
-					std::cout<<"\x1b[33m" << "*" << "\x1b[0m";
-				else if (root == _end)
-					std::cout<<"\x1b[35m" << "*" << "\x1b[0m";
-				else
-					std::cout<<"\x1b[34m" << "*" << "\x1b[0m";
-				return;
-			}
-
-			// Increase distance between levels
-			space += COUNT;
-
-			// Process right child first
-			print2DUtil(root->right, space);
-
-			// Print current node after space
-			// count
-			std::cout << std::endl;
-			for (int i = COUNT; i < space; i++)
-				std::cout<<" ";
-			if (root->color == RED)
-				std::cout << "\x1b[31m";
-			else
-				std::cout << "\x1b[34m";
-			std::cout<<root->val.second<<"\n";
-			std::cout << "\x1b[0m";
-
-			// Process left child
-			print2DUtil(root->left, space);
 		}
 
 

@@ -5,10 +5,25 @@ test_fail () {
 }
 
 clean () {
-  rm -rf ft_vector.txt std_vector.txt
+  rm -rf vector_test
+    cd tests
+    rm -rf std_vector_test.cp
 }
 
-cd ../cmake-build-debug
+cd ..
+
+clean
+
+sed 's/ft::/std::/g' vector_test.cpp > std_vector_test_tmp.cpp
+sed 's/#include "vector.hpp"/#include <vector>/g' std_vector_test_tmp.cpp > std_vector_test.cpp
+rm -rf std_vector_test_tmp.cpp
+cd ..
+
+mkdir vector_test
+cd vector_test
+cmake ..
+make
+
 ./ft_container_vector > ft_vector.txt
 ./std_container_vector > std_vector.txt
 
@@ -17,5 +32,4 @@ then
 	test_fail
 fi
 
-clean
 echo Test Pass ✅

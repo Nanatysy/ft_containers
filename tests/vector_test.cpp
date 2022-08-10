@@ -281,19 +281,6 @@ int main()
 		std::cout << std::endl;
 
 		ft::vector<int>::iterator middle = std::find(third.begin(), third.end(), 3);
-		if (middle != first.end()) {
-			third.insert(middle, third.begin(), third.end());
-			std::cout << "Third after inserting third in the middle: ";
-			for (ft::vector<int>::iterator it = third.begin(); it != third.end(); ++it) {
-				std::cout << *it << " ";
-			}
-			std::cout << std::endl;
-		}
-		else {
-			std::cout << "failed to find middle element" << std::endl;
-		}
-
-		middle = std::find(third.begin(), third.end(), 3);
 		if (middle == first.end()) {
 			std::cout << "failed to find middle element" << std::endl;
 		}
