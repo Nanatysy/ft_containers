@@ -258,6 +258,18 @@ namespace ft {
 		{
 			return (_vector_base[_size - 1]);
 		}
+		T* data()
+		{
+			if (_size == 0)
+				return nullptr;
+			return &_vector_base[0];
+		}
+		const T* data() const
+		{
+			if (_size == 0)
+				return nullptr;
+			return &_vector_base[0];
+		}
 
 		// modifiers
 		template <class InputIterator>
