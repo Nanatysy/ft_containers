@@ -35,10 +35,6 @@ namespace ft {
 	struct is_iterator : public ft::is_input_iterator<U>
 	{};
 
-//	template<class T>
-//	struct is_iterator : public ft::is_input_iterator<T>
-//	{};
-
 }
 
 #endif //FT_CONTAINERS_ENABLE_IF_HPP

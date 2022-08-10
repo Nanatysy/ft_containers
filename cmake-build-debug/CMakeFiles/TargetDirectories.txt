@@ -1,0 +1,11 @@
+/Users/nastya/Desktop/ft_containers/cmake-build-debug/CMakeFiles/std_container_set.dir
+/Users/nastya/Desktop/ft_containers/cmake-build-debug/CMakeFiles/ft_container_set.dir
+/Users/nastya/Desktop/ft_containers/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/nastya/Desktop/ft_containers/cmake-build-debug/CMakeFiles/ft_container_map.dir
+/Users/nastya/Desktop/ft_containers/cmake-build-debug/CMakeFiles/std_container_vector.dir
+/Users/nastya/Desktop/ft_containers/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/nastya/Desktop/ft_containers/cmake-build-debug/CMakeFiles/std_container_stack.dir
+/Users/nastya/Desktop/ft_containers/cmake-build-debug/CMakeFiles/ft_container_vector.dir
+/Users/nastya/Desktop/ft_containers/cmake-build-debug/CMakeFiles/std_container_map.dir
+/Users/nastya/Desktop/ft_containers/cmake-build-debug/CMakeFiles/ft_container_stack.dir
+/Users/nastya/Desktop/ft_containers/cmake-build-debug/CMakeFiles/ft_containers_vector.dir
