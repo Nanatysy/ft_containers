@@ -18,50 +18,6 @@ add_executable(ft_containers_vector
         my_print.hpp
         compare.hpp)
 
-#add_executable(ft_container_map
-#        map.hpp
-#        enable_if.hpp
-#        pair.hpp
-#        map_test.cpp)
-
-add_executable(ft_pair
-        pair_tmp.cpp
-        pair.hpp)
-
-add_executable(iterator
-        test.cpp)
-
-#add_executable(vector_test
-#        Test/tests.cpp
-#        Test/test_color.hpp
-#        vector.hpp
-#        enable_if.hpp
-#        compare.hpp
-#        iterator.hpp
-#        )
-
-add_executable(range.cpp
-        map.hpp
-        pair.hpp
-        range.cpp
-        )
-
-add_executable(new_vector_test
-        vector.hpp
-        pair.hpp
-        enable_if.hpp
-        iterator.hpp
-        compare.hpp
-        tests/vector_test.cpp
-        )
-
-add_executable(set_test
-        set.hpp
-        map.hpp
-        pair.hpp
-        enable_if.hpp
-        tests/set_test.cpp)
-
 add_executable(ft_container_stack
         tests/stack_test.cpp
         stack.hpp
